@@ -1,0 +1,81 @@
+
+div#task_cnxt {
+	border: 1px solid #CCCCCC;
+	background: #F0F0F0;
+}
+
+div#task_attr, 
+div#task_subtask_top,
+div#task_comment_history,
+div#task_comment_new {
+	padding: 0.2em;
+	margin:0.5em;
+	border: 1px solid #EEEEEE;
+	background: #FFFFFF;
+}
+
+div#task_title_title {
+	font: bold 36px arial,sans-serif;
+	color: #0088AA;
+	padding: 10px;
+}
+
+div#task_title_hirechy {
+	font: 18px arial,sans-serif;
+	padding: 10px;
+}
+
+div#task_title_top {
+
+
+	display: flex;
+	/*container: row | row-reverse | column | column-reverse*/
+	flex-direction: row;
+	/*container: nowrap | wrap | wrap-reverse*/
+	flex-wrap: nowrap;
+	/*container: 子项在主轴方向的对齐
+		flex-start: 主轴开始位置
+		flex-end： 主轴结束位置
+		center： 主轴的中间
+		space-between： 子项在主轴方向均匀散落，第一个和最后一个没有空隙。中间等间隔空隙
+		space-around： 沿主轴方向，每个子项前后都插入等间隔的空隙*/
+	justify-content: flex-start;
+	/*container：子项在从轴方向一行内的对齐
+		flex-start: 子项都对齐到从轴父Box的开始位置
+		flex-end: 子项都对齐到从轴父Box的结束位置
+		center: 子项对齐到从轴父项Box的中线
+		stretch：子项拉伸铺满父项Box的从轴方向
+		baseline: 子项对齐到父项Box从轴的基线*/
+	align-items: flex-start;
+	/*container: 子项在从轴方向多行之间的对齐
+		flex-start: 多行子项对齐到父Box从轴的开始位置
+		flex-end: 多行子项对齐到父Box从轴的结束位置
+		center: 多行子项对齐到父Box从轴的中线
+		stretch: 多行子项拉伸铺满父Box从轴
+		space-between:
+		space-around:*/
+	align-content: flex-start;
+}
+
+div#task_attr {
+	font: normal 16px arial,sans-serif;
+	color: #0088CC;
+}
+
+div#task_attr_line {
+	display: flex;
+}
+
+div#task_attr_line div {
+	width : 25%;
+}
+
+div#task_comment_ctrl {
+	font: bold 12px arial,sans-serif;
+	color: #0088CC;
+	padding: 0.5em;
+}
+
+div#task_comment_cnxt {
+	padding: 0.5em;
+}
