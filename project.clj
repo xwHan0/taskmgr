@@ -7,6 +7,9 @@
                  [ring/ring-defaults "0.2.1"]
                  [org.clojure/core.ex "0.1.0"]
                  [hiccup/hiccup "1.0.5"]
+                 ;For database
+                 [org.clojure/java.jdbc "0.7.3"]
+                 [org.xerial/sqlite-jdbc "3.7.2"]
                  ;for clojurescript
                  [org.clojure/tools.reader "1.0.0-beta3"]
                  [org.clojure/clojurescript "1.9.229"]
