@@ -1,6 +1,11 @@
 (ns database.core
   (:require [clojure.java.jdbc :refer :all]))
 
+;
+(def generated-key (keyword "last_insert_rowid()"))
+
+(def db {:connection-uri "jdbc:sqlite:resources/database/tmgr.sqlite"})
+
 (def db
   {
     :classname   "org.sqlite.JDBC"
