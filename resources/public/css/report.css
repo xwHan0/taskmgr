@@ -1,0 +1,18 @@
+.report_complete{
+    font-size:1.2em;
+    color: blue;
+    font-weight: bold;
+}
+
+th {
+    background-color: #4958ff;
+}
+
+.report_tasks_title{
+    background-color: #eaec5c;
+    text-align: center;
+}
+
+.task_title{
+    font-weight: bold;
+}

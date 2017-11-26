@@ -23,22 +23,29 @@
     ]
     (first items)))
 
-(defn read-task-status [tid]
+(defn read-task-status [tid & date]
   (let [
-    pred (str "SELECT x.complete, x.status, y.content FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid )
-    items (query db [pred])]
+    date (if date date "('now')")
+    sql (str "SELECT x.complete, x.status, y.content FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
+    sql (str sql "and datetime(y.date)<=datetime" date " ")
+    sql (str sql "order by y.date")
+    items (query db [sql])]
     (-> items last)))
 
 (defn read-sub-tasks [tid]
   (let [
-    sql (str "SELECT x.id,x.title,y.owner,y.content FROM status x, descriptions y WHERE ")
-    sql (str sql "x.id = y.tid and x.pid = " tid)
+    sql (str "SELECT x.id,x.title,y.owner,y.content FROM tasks x, descriptions y WHERE ")
+    sql (str sql "x.id = y.tid and x.cid = y.id and x.pid = " tid " ")
     ]
     (query db [sql])))
 
-(defn add-task [{:keys [pid status due title] :as task}]
-  (insert! db :tasks task))
-
+(defn add-task [{:keys [pid owner due title description] :as task}]
+  (let [tid (insert-db db :tasks {:due due :title title :pid pid})]
+    (when (or owner description)
+      (let [did (insert-db db :descriptions {:tid tid :owner owner :content description})]
+        (update! db :tasks {:cid did} ["id = ?" tid])))
+    "Add success!"))
+ 
 (defn add-comment [{:keys [tid type owner content duration] :as desc}]
   (let [description (insert! db :descriptions desc)
         did (generated-key (first description))
@@ -50,4 +57,4 @@
 (defn add-status [{:keys [tid complete status description]}]
   (let [did (insert-db db :descriptions {:tid tid :content description})
         sid (insert-db db :status {:tid tid :cid did :complete complete :status status})]
-    (str sid)))
+    "Add success!"))
