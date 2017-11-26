@@ -11,9 +11,9 @@
     [:table {:border "1em"}
       [:thead [:tr [:th "Title"] (for [d dates] [:td d])]]
       [:tbody
-        (for [{:keys [title content]} task-status]
-          [:tr [:td title]
-          (for [cnxt content]
+        (for [{:keys [title owner status]} task-status]
+          [:tr [:td [:div#task_title title] [:div#task_owner owner]]
+          (for [{:keys [complete status content]} status]
             [:td cnxt])])]]))
 
 (defn page [tid]
