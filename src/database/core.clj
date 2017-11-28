@@ -17,8 +17,9 @@
 
 (defn read-task [tid]
   (let [
-    sql (str "SELECT x.id, x.title, y.owner, y.content FROM tasks x, descriptions y WHERE 
-             x.id = y.tid and x.id = " tid)
+    sql (str "SELECT x.id, x.title, y.owner, y.content, y.date 
+              FROM tasks x left outer join descriptions y on x.id=y.tid 
+              WHERE x.id = " tid)
     items (query db [sql])
     ]
     (first items)))
@@ -34,10 +35,19 @@
 
 (defn read-sub-tasks [tid]
   (let [
-    sql (str "SELECT x.id,x.title,y.owner,y.content FROM tasks x, descriptions y WHERE ")
-    sql (str sql "x.id = y.tid and x.cid = y.id and x.pid = " tid " ")
+    sql (str "SELECT x.id,x.title,y.owner,y.date 
+              FROM tasks x left outer join descriptions y on x.cid=y.id 
+              WHERE x.pid=" tid)
     ]
     (query db [sql])))
+
+(defn read-ancestor-tasks [tid]
+  (if (zero? tid)
+    []
+    (let [{:keys [title pid]} (first (query db ["SELECT title,pid FROM tasks WHERE id=?" tid]))]
+      (if (zero? pid)
+        [{:title title :id tid}]
+        (conj (read-ancestor-tasks pid) {:title title :id tid})))))
 
 (defn add-task [{:keys [pid owner due title description] :as task}]
   (let [tid (insert-db db :tasks {:due due :title title :pid pid})]

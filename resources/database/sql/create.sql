@@ -1,25 +1,28 @@
----ALTER TABLE tasks RENAME TO temp;
+--ALTER TABLE tasks RENAME TO temp;  -- Rename table
 
----declare @tbl_name text;
+--drop table tasks; --- Do not need when rename Table using ALTER 
 
----set @tbl_name status;
+--CREATE TABLE descriptions
+--(
+  --id INTEGER PRIMARY KEY AUTOINCREMENT,
+  --cid INTEGER default 0,
 
-drop table descriptions;
+  -- tasks Table
+  --pid INTEGER default 0, title
 
-CREATE TABLE descriptions
-(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  tid INTEGER default -1,  --No task id
-  --cid INTEGER,
-  --pid INTEGER DEFAULT 0,
+  -- descriptions Table
+  --tid INTEGER default 0, type, owner, content,duration default 0.5,
+  --date TIMESTAMP DEFAULT (datetime('now','localtime'))
+
+  --tid INTEGER default -1,  --No task id
   --status,due,title  --tasks
   --complete INTEGER,
   --status integer
   --type integer --comments
   --status, type, class, owner  --select_lists
-  type integer, owner integer, date TIMESTAMP DEFAULT (datetime('now','localtime')), content, duration default 0.5 --descriptions
-);
+  --type integer, owner integer, date TIMESTAMP DEFAULT (datetime('now','localtime')), content, duration default 0.5 --descriptions
+--);
 
----INSERT INTO tasks () select tbl from temp;
+--INSERT INTO descriptions(id,tid,type,owner,content,duration,date) select id,tid,type,owner,content,duration,date from temp;
 
----drop table temp;
+drop table temp;
