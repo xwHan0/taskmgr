@@ -21,12 +21,12 @@
         [:div {:id "task_title_title"} title]
         [:div {:id "task_title_hirechy"} (title-componment-hirechy parent-task-vector)]]])
 
-(defn- attribute-componment [{:keys [date owner status complete finish-date resume-time]}]
+(defn- attribute-componment [{:keys [date owner due status complete finish-date resume-time]}]
   "按照task-info信息填充任务属性。"
   [:div#task_attr
     [:div#task_attr_line
       [:div "| Owner"] [:div (str ": " owner)]
-      [:div "| Finish"] [:div (str ": " finish-date)]]
+      [:div "| Due"] [:div (str ": " due)]]
     [:div#task_attr_line
       [:div "| Complete"] [:div (str ": " complete "%")]
       [:div "| Status"] [:div (str ": " status)]]

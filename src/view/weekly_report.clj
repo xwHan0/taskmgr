@@ -20,12 +20,13 @@
     task-status (map #(assoc %1 :status %2) sub-tasks sub-tasks-status)
   ]
     [:table 
-      [:thead [:tr [:th "Task"] (for [d dates] [:th d])]]
+      [:thead [:tr [:th "Task"] [:th "Due"] (for [d dates] [:th d])]]
       [:tbody
-        (for [{:keys [title owner status]} task-status]
+        (for [{:keys [title owner status due]} task-status]
           [:tr [:td.report_tasks_title [:div.task_title title] [:div#task_owner owner]]
-          (for [{:keys [complete status content] :or {complete 0 status "gray"}} status]
-            [:td [:div.report_complete [:img {:src (str "img/" status ".png")}] complete "%" ] [:div content]])])]]))
+            [:td due]
+            (for [{:keys [complete status content] :or {complete 0 status "gray"}} status]
+              [:td [:div.report_complete [:img {:src (str "img/" status ".png")}] complete "%" ] [:div content]])])]]))
 
 (defn page [tid date]
   (let [

@@ -18,7 +18,7 @@
         "js/taskview.js"
       ]
       ["css/taskview.css" "dataTables/jquery.dataTables.min.css"]
-      [:form#task {:method "post" :action (str "/create_task?id=" tid)}
+      [:form#task {:method "post" :action (str "/add_task?id=" tid)}
         [:input#title {:type "text" :name "title"}]
         [:input#due {:type "date" :name "due"}]
         [:input#owner {:type "text" :name "owner"}]
