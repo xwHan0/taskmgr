@@ -9,7 +9,7 @@
                  [hiccup/hiccup "1.0.5"]
                  ;For database
                  [org.clojure/java.jdbc "0.7.3"]
-                 [org.xerial/sqlite-jdbc "3.7.2"]
+                 [org.xerial/sqlite-jdbc "3.15.1"]
                  ;for clojurescript
                  [org.clojure/tools.reader "1.0.0-beta3"]
                  [org.clojure/clojurescript "1.9.229"]

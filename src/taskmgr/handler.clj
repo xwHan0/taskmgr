@@ -15,7 +15,9 @@
   (GET "/task" [id] (task/page (Integer/parseInt id)))
   (GET "/add_task" [id] (task-create/page id))
   (POST "/add_task" [id title owner due description] 
-    (db/add-task {:pid (Integer/parseInt id) :title title :owner owner :due due :description description}))
+    (do
+      (db/add-task {:pid (Integer/parseInt id) :title title :owner owner :due due :description description})
+      (ring.util.response/redirect (str "/task?id=" id))))
   (GET "/edit_task" [id] (task-create/page id))
   (GET "/delete_task" [id])
   
@@ -23,7 +25,7 @@
   (GET "/add_comment" [] (db/add-comment {:tid 4 :type 0 :content "Initial version."}))
   (GET "/read_task_status" [] (db/read-task-status 4 "2018-01-01"))
   
-  (GET "/report" [] (weekly-report/page 4 "2018-01-01"))
+  (GET "/report" [id] (weekly-report/page (IntegerInt id) "2018-01-01"))
   (GET "/milestone" [] (milestone/page))
 
   ;Test

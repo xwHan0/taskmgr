@@ -54,7 +54,7 @@
     sub-tasks-status (->> sub-tasks (map :id) (map db/read-task-status) (map :status))
     sub-tasks-info (map #(assoc %1 :status %2) sub-tasks sub-tasks-status)
   ]
-    (println "status is:" sub-tasks-info)
+    ;(println "status is:" sub-tasks-info)
     (util/page
       [
         "js/jquery-3.1.1.min.js" 
