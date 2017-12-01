@@ -36,6 +36,12 @@
     [:div {:id "task_attr_line"}
       [:div "| Resume"] [:div {:id "resume_div"} (str ": " 22)]]])
 
+(defn- task-commands [tid]
+  [:div#task_command_bar
+    [:div [:a {:href (str "/add_task?id=" tid)} "Create Sub Task"]]
+    [:div " | "]
+    [:div [:a {:href (str "/add_status?id=" tid)} "Add status"] ]])
+
 (defn- subtask-componment [subtasks]
     "填充子任务组件。"
     [:div#task_subtask_top
@@ -66,6 +72,7 @@
       [:div#task_cnxt
         (title-componment task-info (db/read-ancestor-tasks tid))
         (attribute-componment task-info)
+        (task-commands tid)
         (subtask-componment sub-tasks-info)
       ]
     ;   (include-js "js/taskview.js")

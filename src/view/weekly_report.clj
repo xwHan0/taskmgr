@@ -2,6 +2,9 @@
   (:require [clojure.core.ex :refer :all] 
             [hiccup.core :refer :all]
             [hiccup.page :refer :all]
+            [debux.core :refer :all]
+            [clj-time.core :as t]
+            [clj-time.format :as tf]
             [view.util :as util]
             [database.core :as db]))
 
@@ -30,6 +33,11 @@
 
 (defn page [tid date]
   (let [
+    custom-format (tf/formatter "yyyy-MM-dd")
+    current (tf/parse custom-format date)
+    intervals (map #(t/weeks %) (reverse (range 4)))
+    dates (map #(t/minus current %) intervals)
+    dates (map #(tf/unparse custom-format %) dates)
     ]
     (util/page
       ;JS
@@ -39,4 +47,4 @@
       ;Component
       [:h2 (->> tid db/read-task :title)]
       [:p (:content (db/read-task-status tid date))]
-      (detail-tbl ["2017-11-27" "2018-01-01"] tid))))
+      (detail-tbl dates tid))))

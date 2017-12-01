@@ -1,5 +1,7 @@
 (ns database.core
-  (:require [clojure.java.jdbc :refer :all]))
+  (:require 
+    [clojure.java.jdbc :refer :all]
+    [debux.core :refer :all]))
 
 ;
 (def generated-key (keyword "last_insert_rowid()"))

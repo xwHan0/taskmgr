@@ -7,25 +7,31 @@
             [view.weekly-report :as weekly-report]
             [view.task :as task]
             [view.task-create :as task-create]
+            [view.status-add :as status-add]
             [view.milestone :as milestone]))
 
 (defroutes app-routes
   (GET "/" [] (task/page 0))
   
   (GET "/task" [id] (task/page (Integer/parseInt id)))
-  (GET "/add_task" [id] (task-create/page id))
+  (GET "/add_task" [id] (task-create/page (Integer/parseInt id)))
   (POST "/add_task" [id title owner due description] 
     (do
       (db/add-task {:pid (Integer/parseInt id) :title title :owner owner :due due :description description})
       (ring.util.response/redirect (str "/task?id=" id))))
-  (GET "/edit_task" [id] (task-create/page id))
+  (GET "/edit_task" [id] (task-create/page (Integer/parseInt id)))
   (GET "/delete_task" [id])
   
-  (GET "/add_status" [] (db/add-status {:tid 9 :complete 100 :status "Green" :description "Initial version has done."}))
+  (GET "/add_status" [id] (status-add/page (Integer/parseInt id)))
+  (POST "/add_status" [id status owner complete description]
+    (do 
+      (db/add-status {:tid (Integer/parseInt id) :complete complete :status status :description description :owner owner})
+      (ring.util.response/redirect (str "/task?id=" id))))
+
   (GET "/add_comment" [] (db/add-comment {:tid 4 :type 0 :content "Initial version."}))
   (GET "/read_task_status" [] (db/read-task-status 4 "2018-01-01"))
   
-  (GET "/report" [id] (weekly-report/page (IntegerInt id) "2018-01-01"))
+  (GET "/report" [id] (weekly-report/page (Integer/parseInt id) "2018-12-05"))
   (GET "/milestone" [] (milestone/page))
 
   ;Test
