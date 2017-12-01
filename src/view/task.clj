@@ -41,14 +41,20 @@
     [:div#task_subtask_top
         [:table {:id "task_subtask_tbl"}
         [:thead
-        [:tr [:th "No."] [:th "Title"] [:th "Owner"] [:th "Date"]]]
+        [:tr [:th "No."] [:th "Title"] [:th "Owner"] [:th "Status"]]]
         (apply vector :tbody
-            (for [{:keys [id title owner date]} subtasks]
-                [:tr [:td id] [:td [:a {:href (str "/task?id=" id)} title]] [:td owner] [:td date]]))]])
+            (for [{:keys [id title owner status]} subtasks]
+                [:tr [:td id] [:td [:a {:href (str "/task?id=" id)} title]] [:td owner] [:td status]]))]])
       
 
 (defn page [tid]
-  (let [task-info (into (db/read-task-status tid) (db/read-task tid))]
+  (let [
+    task-info (into (db/read-task-status tid) (db/read-task tid))
+    sub-tasks (db/read-sub-tasks tid)
+    sub-tasks-status (->> sub-tasks (map :id) (map db/read-task-status) (map :status))
+    sub-tasks-info (map #(assoc %1 :status %2) sub-tasks sub-tasks-status)
+  ]
+    (println "status is:" sub-tasks-info)
     (util/page
       [
         "js/jquery-3.1.1.min.js" 
@@ -60,7 +66,7 @@
       [:div#task_cnxt
         (title-componment task-info (db/read-ancestor-tasks tid))
         (attribute-componment task-info)
-        (subtask-componment (db/read-sub-tasks tid))
+        (subtask-componment sub-tasks-info)
       ]
     ;   (include-js "js/taskview.js")
       )))

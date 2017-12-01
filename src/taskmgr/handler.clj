@@ -9,7 +9,7 @@
             [view.task-create :as task-create]
             [view.milestone :as milestone]))
 
-(defroutes app-routes                                  :resume-time 23}))
+(defroutes app-routes
   (GET "/" [] (task/page 0))
   
   (GET "/task" [id] (task/page (Integer/parseInt id)))
