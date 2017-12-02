@@ -28,9 +28,9 @@
 
 (defn read-task-status [tid & date]
   (let [
-    ; date (if date date "('now')")
+    date (first date)
     sql (str "SELECT x.complete, x.status, y.content FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
-    sql (str sql (if date (str "and datetime(y.date)<=datetime" date " ") " "))
+    sql (str sql (if date (str "and datetime(y.date)<=datetime('" date "') ") " "))
     sql (str sql "order by y.date")
     items (query db [sql])]
     (-> items last)))
