@@ -29,7 +29,7 @@
 (defn read-task-status [tid & date]
   (let [
     date (first date)
-    sql (str "SELECT x.complete, x.status, y.content FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
+    sql (str "SELECT x.complete, x.status, y.content, y.owner FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
     sql (str sql (if date (str "and datetime(y.date)<=datetime('" date "') ") " "))
     sql (str sql "order by y.date")
     items (query db [sql])]
@@ -55,7 +55,8 @@
   (let [
     sql (str "SELECT x.date,x.owner,x.content,y.complete,y.status 
               FROM descriptions x left outer join status y on x.id=y.cid 
-              WHERE x.tid=?")
+              WHERE x.tid=" tid
+              " ORDER by x.date")
   ]
     (query db [sql tid])))
 
