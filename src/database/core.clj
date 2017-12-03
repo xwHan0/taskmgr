@@ -58,7 +58,7 @@
               WHERE x.tid=" tid
               " ORDER by x.date")
   ]
-    (query db [sql tid])))
+    (query db [sql])))
 
 (defn add-task [{:keys [pid owner due title description] :as task}]
   (let [tid (insert-db db :tasks {:due due :title title :pid pid})]

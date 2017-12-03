@@ -34,7 +34,7 @@
         (status-field status)
         (owner-field owner)
         (complete-field complete)
-        [:textarea#descriptin {:name "description" :value content}]
+        [:textarea#descriptin {:name "description"} content]
         [:input {:type "submit"}]
         (anti-forgery-field)
       ]

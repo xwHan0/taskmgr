@@ -12,4 +12,21 @@ $(document).ready(function() {
 	
 } );
 
+// $("#Test_Status").onclick(function(){
+// 	alert("Hello.")
+// })
+
+$("#test").on('click',function(){
+	alert("Hello.");
+})
+
+// layer.open({
+//   type: 2,
+//   title: 'layer mobile页',
+//   shadeClose: true,
+//   shade: 0.8,
+//   area: ['380px', '90%'],
+//   content: 'mobile/' //iframe的url
+// }); 
+
 // goog.require("taskview.core");

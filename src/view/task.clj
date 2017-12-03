@@ -43,11 +43,13 @@
       [:li [:a {:href (str "#" tid)} "Task"]
         [:ul 
           [:li [:a {:href (str "/add_status?id=" tid)} "Add Sub Task"]]
-          [:li [:a {:href (str "/add_status?id=" tid)} "Edit Task"]]
+          [:li
+            [:a {:href (str "javascript:")} 
+              "Edit Task"]]
           [:li [:a {:href (str "/add_status?id=" tid)} "Delete Task"]]]]
       [:li [:a {:href (str "/add_status?id=" tid)} [:img {:src "images/home.png"}] "Add Status"]
         [:ul 
-          [:li [:a {:href (str "/add_status?id=" tid)} "Add Status"]]
+          [:li [:a#test {:href "javascript:;"} "Add Status"]]
           [:li [:a {:href (str "/add_status?id=" tid)} "Add Status"]]]]
       [:li [:a {:href (str "/report?id=" tid)}  "Report"]]
       ]])
@@ -99,6 +101,7 @@
         "js/jquery-3.2.1.min.js" 
         "dataTables/jquery.dataTables.min.js" 
         "js/tinymce/tinymce.min.js" 
+        "layer/layer.js"
         ; "js/taskview.js"
       ]
       [
