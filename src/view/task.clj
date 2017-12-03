@@ -38,9 +38,19 @@
 
 (defn- task-commands [tid]
   [:div#task_command_bar
-    [:div [:a {:href (str "/add_task?id=" tid)} "Create Sub Task"]]
-    [:div " | "]
-    [:div [:a {:href (str "/add_status?id=" tid)} "Add status"] ]])
+    [:ul#nav
+      [:li [:a {:href (str "/add_task?id=" tid)} [:img {:src "images/home.png"}] "Add Task"]]
+      [:li [:a {:href (str "#" tid)} "Task"]
+        [:ul 
+          [:li [:a {:href (str "/add_status?id=" tid)} "Add Sub Task"]]
+          [:li [:a {:href (str "/add_status?id=" tid)} "Edit Task"]]
+          [:li [:a {:href (str "/add_status?id=" tid)} "Delete Task"]]]]
+      [:li [:a {:href (str "/add_status?id=" tid)} [:img {:src "images/home.png"}] "Add Status"]
+        [:ul 
+          [:li [:a {:href (str "/add_status?id=" tid)} "Add Status"]]
+          [:li [:a {:href (str "/add_status?id=" tid)} "Add Status"]]]]
+      [:li [:a {:href (str "/report?id=" tid)}  "Report"]]
+      ]])
 
 (defn- subtask-componment [subtasks]
     "填充子任务组件。"
@@ -53,6 +63,29 @@
                 [:tr [:td id] [:td [:a {:href (str "/task?id=" id)} title]] [:td owner] [:td status]]))]])
       
 
+(defn- comment-componment-history
+  "按照comments显示历史comment信息"
+  [{:keys [date content owner status complete]}]
+  [:div {:id "task_comment_one"}
+    [:div {:id "task_comment_ctrl"} 
+      [:div date " by " owner]  [:div " Edit | Delete"] ]
+    (when status
+      [:div#task_comment_ctrl
+        [:div "Status: " status " and complete: " complete "%"]])
+    [:div {:id (if status "task_status_cnxt" "task_comment_cnxt")} content]])
+
+(defn- comment-componment
+  "按照comments信息填充注释组件。"
+  [comments]
+  [:div {:id "task_comment_top"}
+    (apply vector :div 
+          {:id "task_comment_history"}
+          (map comment-componment-history comments))
+    [:div {:id "task_comment_new"}
+    [:textarea {:id "comment" :name "comment"}]
+    [:br]
+    [:input {:type "button" :id "comment" :name "comment" :value "comment"}]]])
+
 (defn page [tid]
   (let [
     task-info (into (db/read-task-status tid) (db/read-task tid))
@@ -63,17 +96,22 @@
     ;(println "status is:" sub-tasks-info)
     (util/page
       [
-        "js/jquery-3.1.1.min.js" 
+        "js/jquery-3.2.1.min.js" 
         "dataTables/jquery.dataTables.min.js" 
         "js/tinymce/tinymce.min.js" 
-        "js/taskview.js"
+        ; "js/taskview.js"
       ]
-      ["css/taskview.css" "dataTables/jquery.dataTables.min.css"]
+      [
+        "css/taskview.css" 
+        "dataTables/jquery.dataTables.min.css"
+        "css/nav_menu3.css"
+      ]
       [:div#task_cnxt
         (title-componment task-info (db/read-ancestor-tasks tid))
-        (attribute-componment task-info)
         (task-commands tid)
+        (attribute-componment task-info)
         (subtask-componment sub-tasks-info)
+        (comment-componment (db/read-descriptions tid))
       ]
-    ;   (include-js "js/taskview.js")
+      (include-js "js/taskview.js")
       )))

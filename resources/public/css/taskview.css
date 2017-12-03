@@ -1,4 +1,5 @@
 
+
 div#task_cnxt {
 	border: 1px solid #CCCCCC;
 	background: #F0F0F0;
@@ -74,8 +75,21 @@ div#task_comment_ctrl {
 	font: bold 12px arial,sans-serif;
 	color: #0088CC;
 	padding: 0.5em;
+
+	display: flex;
+	/*container: row | row-reverse | column | column-reverse*/
+	flex-direction: row;
 }
 
 div#task_comment_cnxt {
 	padding: 0.5em;
+}
+
+div#task_status_cnxt {
+	padding: 0.5em;
+	background: #f7e0e0;
+}
+
+div#task_command_bar {
+
 }

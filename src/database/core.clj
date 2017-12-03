@@ -51,6 +51,14 @@
         [{:title title :id tid}]
         (conj (read-ancestor-tasks pid) {:title title :id tid})))))
 
+(defn read-descriptions [tid]
+  (let [
+    sql (str "SELECT x.date,x.owner,x.content,y.complete,y.status 
+              FROM descriptions x left outer join status y on x.id=y.cid 
+              WHERE x.tid=?")
+  ]
+    (query db [sql tid])))
+
 (defn add-task [{:keys [pid owner due title description] :as task}]
   (let [tid (insert-db db :tasks {:due due :title title :pid pid})]
     (when (or owner description)

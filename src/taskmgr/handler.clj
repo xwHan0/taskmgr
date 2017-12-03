@@ -31,7 +31,7 @@
   (GET "/add_comment" [] (db/add-comment {:tid 4 :type 0 :content "Initial version."}))
   (GET "/read_task_status" [] (db/read-task-status 4 "2018-01-01"))
   
-  (GET "/report" [id] (weekly-report/page (Integer/parseInt id) "2018-12-05"))
+  (GET "/report" [id date] (weekly-report/page (Integer/parseInt id) date))
   (GET "/milestone" [] (milestone/page))
 
   ;Test

@@ -31,9 +31,13 @@
             (for [{:keys [complete status content] :or {complete 0 status "gray"}} status]
               [:td [:div.report_complete [:img {:src (str "img/" status ".png")}] complete "%" ] [:div content]])])]]))
 
-(defn page [tid date]
+(defn page [tid & date]
   (let [
     custom-format (tf/formatter "yyyy-MM-dd")
+    date 
+      (if (first date)
+        (first date)
+        (tf/unparse custom-format (t/to-time-zone (t/now) (t/default-time-zone))))
     current (tf/parse custom-format date)
     intervals (map #(t/weeks %) (reverse (range 4)))
     dates (map #(t/minus current %) intervals)
