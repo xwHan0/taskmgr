@@ -47,10 +47,16 @@
             [:a {:href (str "javascript:")} 
               "Edit Task"]]
           [:li [:a {:href (str "/add_status?id=" tid)} "Delete Task"]]]]
-      [:li [:a {:href (str "/add_status?id=" tid)} [:img {:src "images/home.png"}] "Add Status"]
-        [:ul 
-          [:li [:a#test {:href "javascript:;"} "Add Status"]]
-          [:li [:a {:href (str "/add_status?id=" tid)} "Add Status"]]]]
+      [:li [:a {:href 
+        (str "layer.open({
+          type: 2,
+          title: 'Add Status',
+          shadeClose: true,
+          shade: 0.5,
+          area: ['600px', '90%'],
+          content: '/add_status?id=" tid "'
+          }); ")} 
+        "Add Status"]]
       [:li [:a {:href (str "/report?id=" tid)}  "Report"]]
       ]])
 
