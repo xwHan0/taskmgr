@@ -67,13 +67,10 @@
         (update! db :tasks {:cid did} ["id = ?" tid])))
     "Add success!"))
  
-(defn add-comment [{:keys [tid type owner content duration] :as desc}]
-  (let [description (insert! db :descriptions desc)
-        did (generated-key (first description))
-        comment (insert! db :comments {:tid tid :cid did :type 0})
-        cid (generated-key (first comment))]
-    ; (update! db :tasks {:cid cid} ["id = ?" tid])
-    ))
+(defn add-comment [{:keys [tid owner status complete start end content] :as desc}]
+  (let [did (insert-db db :descriptions desc)]
+    (when (or status complete)
+      (insert-db db :status {:tid tid :cid did :status status :complete complete}))))
     
 (defn add-status [{:keys [tid complete status description]}]
   (let [did (insert-db db :descriptions {:tid tid :content description})

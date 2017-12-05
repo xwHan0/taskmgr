@@ -26,7 +26,7 @@
   (POST "/add_status" [id status owner complete description]
     (do 
       (db/add-status {:tid (Integer/parseInt id) :complete complete :status status :description description :owner owner})
-      (ring.util.response/redirect (str "/task?id=" id))))
+      #_(ring.util.response/redirect (str "/task?id=" id))))
 
   (GET "/add_comment" [] (db/add-comment {:tid 4 :type 0 :content "Initial version."}))
   (GET "/read_task_status" [] (db/read-task-status 4 "2018-01-01"))
