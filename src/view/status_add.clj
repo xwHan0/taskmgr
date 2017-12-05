@@ -7,21 +7,24 @@
     [view.util :as util]))
 
 
-(defn- status-field [status]
-  [:div#field
-    [:span "Status: "] [:input#status {:type "text" :name "status" :size 10 :value status}]])
-
 (defn- owner-field [owner]
   [:div#field
     [:span "Owner: "] [:input#owner {:type "text" :name "owner" :size 10 :value owner}]])
 
-(defn- complete-field [complete]
+(defn- status-field [complete status]
   [:div#field
+    [:span "Status: "] [:input#status {:type "text" :name "status" :size 10 :value status}]
     [:span "Complete(%): "] [:input#complete {:type "number" :name "complete" :size 10 :value complete}]])
 
-(defn page [tid]
+(defn- date-field [start finish]
+  [:div#field
+    [:span "Start: "] [:input#start {:type "datetime-local" :name "start" }]
+    [:span "Finish: "] [:input#finish {:type "datetime-local" :name "finish" }]])
+    
+(defn page [tid & cid]
   (let [
-    {:keys [status owner complete content]} (db/read-task-status tid)
+    cid (first cid)
+        {:keys [status owner complete content start finish]} (last (db/read-descriptions tid cid))
   ]
     (util/page
       [
@@ -31,11 +34,11 @@
       ]
       ["css/taskadd.css"]
       [:form#task_cnxt {:method "post" :action (str "/add_status?id=" tid)}
-        (status-field status)
         (owner-field owner)
-        (complete-field complete)
+        (status-field complete status)
+        (date-field start finish)
         [:textarea#descriptin {:name "description"} content]
-        [:input {:type "submit"}]
+        [:input {:type "submit" :value "submit"}]
         (anti-forgery-field)
       ]
       )))

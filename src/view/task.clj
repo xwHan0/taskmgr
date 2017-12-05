@@ -1,7 +1,6 @@
 (ns view.task
   (:require
     [clojure.core.ex :refer :all]
-    [hiccup.page :refer :all]
     [database.core :as db]
     [view.util :as util]))
 
@@ -21,7 +20,7 @@
         [:div {:id "task_title_title"} title]
         [:div {:id "task_title_hirechy"} (title-componment-hirechy parent-task-vector)]]])
 
-(defn- attribute-componment [{:keys [date owner due status complete finish-date resume-time]}]
+(defn- attribute-componment [{:keys [start finish owner due status complete resume-time]}]
   "按照task-info信息填充任务属性。"
   [:div#task_attr
     [:div#task_attr_line
@@ -31,15 +30,15 @@
       [:div "| Complete"] [:div (str ": " complete "%")]
       [:div "| Status"] [:div (str ": " status)]]
     [:div#task_attr_line
-      [:div "| Start"] [:div (str ": " date)]
-      [:div "| Finish"] [:div (str ": " finish-date)]]
+      [:div "| Start"] [:div (str ": " start)]
+      [:div "| Finish"] [:div (str ": " finish)]]
     [:div {:id "task_attr_line"}
       [:div "| Resume"] [:div {:id "resume_div"} (str ": " 22)]]])
 
 (defn- task-commands [tid]
   [:div#task_command_bar
     [:ul#nav
-      [:li [:a {:href (str "/add_task?id=" tid)} [:img {:src "images/home.png"}] "Add Task"]]
+      [:li [:a {:href (str "/add_task?id=" tid)} "Add Task"]]
       [:li [:a {:href (str "#" tid)} "Task"]
         [:ul 
           [:li [:a {:href (str "/add_status?id=" tid)} "Add Sub Task"]]
@@ -47,16 +46,8 @@
             [:a {:href (str "javascript:")} 
               "Edit Task"]]
           [:li [:a {:href (str "/add_status?id=" tid)} "Delete Task"]]]]
-      [:li [:a {:href 
-        (str "layer.open({
-          type: 2,
-          title: 'Add Status',
-          shadeClose: true,
-          shade: 0.5,
-          area: ['600px', '90%'],
-          content: '/add_status?id=" tid "'
-          }); ")} 
-        "Add Status"]]
+      [:li [:a {:href (str "javascript: description_layer(" tid ")")} "Add Status"]]
+      [:li [:a {:href (str "javascript: description_layer(0)")} "Add Record"]]
       [:li [:a {:href (str "/report?id=" tid)}  "Report"]]
       ]])
 
@@ -101,14 +92,13 @@
     sub-tasks-status (->> sub-tasks (map :id) (map db/read-task-status) (map :status))
     sub-tasks-info (map #(assoc %1 :status %2) sub-tasks sub-tasks-status)
   ]
-    ;(println "status is:" sub-tasks-info)
     (util/page
       [
         "js/jquery-3.2.1.min.js" 
         "dataTables/jquery.dataTables.min.js" 
         "js/tinymce/tinymce.min.js" 
         "layer/layer.js"
-        ; "js/taskview.js"
+        "js/taskview.js"
       ]
       [
         "css/taskview.css" 
@@ -122,5 +112,4 @@
         (subtask-componment sub-tasks-info)
         (comment-componment (db/read-descriptions tid))
       ]
-      (include-js "js/taskview.js")
       )))

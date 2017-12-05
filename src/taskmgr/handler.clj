@@ -23,9 +23,9 @@
   (GET "/delete_task" [id])
   
   (GET "/add_status" [id] (status-add/page (Integer/parseInt id)))
-  (POST "/add_status" [id status owner complete description]
+  (POST "/add_status" [id start finish status owner complete description]
     (do 
-      (db/add-status {:tid (Integer/parseInt id) :complete complete :status status :description description :owner owner})
+      (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :complete complete :status status :description description :owner owner})
       #_(ring.util.response/redirect (str "/task?id=" id))))
 
   (GET "/add_comment" [] (db/add-comment {:tid 4 :type 0 :content "Initial version."}))

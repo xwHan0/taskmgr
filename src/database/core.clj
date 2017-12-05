@@ -19,7 +19,7 @@
 
 (defn read-task [tid]
   (let [
-    sql (str "SELECT x.id, x.title, x.due, y.owner, y.content, y.date 
+    sql (str "SELECT x.id, x.title, x.due, y.owner, y.content, y.finish 
               FROM tasks x left outer join descriptions y on x.id=y.tid 
               WHERE x.id = " tid)
     items (query db [sql])
@@ -29,15 +29,15 @@
 (defn read-task-status [tid & date]
   (let [
     date (first date)
-    sql (str "SELECT x.complete, x.status, y.content, y.owner FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
-    sql (str sql (if date (str "and datetime(y.date)<=datetime('" date "') ") " "))
-    sql (str sql "order by y.date")
+    sql (str "SELECT x.complete, x.status, y.content, y.owner, y.start, y.finish FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
+    sql (str sql (if date (str "and datetime(y.finish)<=datetime('" date "') ") " "))
+    sql (str sql "order by y.finish")
     items (query db [sql])]
     (-> items last)))
 
 (defn read-sub-tasks [tid]
   (let [
-    sql (str "SELECT x.id,x.title,x.due,y.owner,y.date 
+    sql (str "SELECT x.id,x.title,x.due,y.owner
               FROM tasks x left outer join descriptions y on x.cid=y.id 
               WHERE x.pid=" tid)
     ]
@@ -51,12 +51,13 @@
         [{:title title :id tid}]
         (conj (read-ancestor-tasks pid) {:title title :id tid})))))
 
-(defn read-descriptions [tid]
+(defn read-descriptions [tid & cid]
   (let [
-    sql (str "SELECT x.date,x.owner,x.content,y.complete,y.status 
+    cid (first cid)
+    sql (str "SELECT x.start,x.finish,x.owner,x.content,y.complete,y.status 
               FROM descriptions x left outer join status y on x.id=y.cid 
-              WHERE x.tid=" tid
-              " ORDER by x.date")
+              WHERE x.tid=" tid (if cid (str " cid=" cid) "") " "
+              " ORDER by x.finish")
   ]
     (query db [sql])))
 
@@ -72,7 +73,14 @@
     (when (or status complete)
       (insert-db db :status {:tid tid :cid did :status status :complete complete}))))
     
-(defn add-status [{:keys [tid complete status description]}]
-  (let [did (insert-db db :descriptions {:tid tid :content description})
-        sid (insert-db db :status {:tid tid :cid did :complete complete :status status})]
-    "Add success!"))
+(defn add-status [{:keys [tid start finish owner complete status description] :as in}]
+  (let [
+    tid (if (zero? tid) nil tid)
+    did (insert-db db :descriptions (into in {:tid tid}))
+    ]
+    (cond
+      (and tid (or complete status))
+        (do (insert-db db :status {:tid tid :cid did :complete complete :status status}) "Add status success!")
+      :else "Add record success!")))
+
+
