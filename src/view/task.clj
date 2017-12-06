@@ -46,8 +46,12 @@
             [:a {:href (str "javascript:")} 
               "Edit Task"]]
           [:li [:a {:href (str "/add_status?id=" tid)} "Delete Task"]]]]
-      [:li [:a {:href (str "javascript: description_layer(" tid ")")} "Add Status"]]
-      [:li [:a {:href (str "javascript: description_layer(0)")} "Add Record"]]
+      [:li [:a {:href "#"} "Comment"]
+        [:ul
+        [:li [:a {:href (str "javascript: description_layer(" tid ")")} "Add Task Status"]]
+        [:li [:a {:href "#"} ""]]
+        [:li [:a {:href (str "javascript: description_layer(0)")} "Add Global Record"]]
+        ]]
       [:li [:a {:href (str "/report?id=" tid)}  "Report"]]
       ]])
 
