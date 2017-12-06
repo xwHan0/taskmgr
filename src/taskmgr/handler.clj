@@ -22,6 +22,8 @@
   (GET "/edit_task" [id] (task-create/page (Integer/parseInt id)))
   (GET "/delete_task" [id])
   
+  (GET "/comment" [id typ] (status-add/page (Integer/parseInt id) typ))
+
   (GET "/add_status" [id] (status-add/page (Integer/parseInt id)))
   (POST "/add_status" [id start finish status owner complete description]
     (do 

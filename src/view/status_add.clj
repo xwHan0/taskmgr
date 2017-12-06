@@ -24,7 +24,9 @@
 (defn page [tid & cid]
   (let [
     cid (first cid)
-        {:keys [status owner complete content start finish]} (last (db/read-descriptions tid cid))
+    typ (second cid)
+    typ (if typ typ "status")
+    {:keys [status owner complete content start finish]} (last (db/read-descriptions tid cid))
   ]
     (util/page
       [
@@ -35,7 +37,9 @@
       ["css/taskadd.css"]
       [:form#task_cnxt {:method "post" :action (str "/add_status?id=" tid)}
         (owner-field owner)
-        (status-field complete status)
+        (cond
+          (= typ "status") (status-field complete status)
+          )
         (date-field start finish)
         [:textarea#descriptin {:name "description"} content]
         [:input {:type "submit" :value "submit"}]

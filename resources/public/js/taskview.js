@@ -23,14 +23,14 @@ $(document).ready(function() {
 
 // goog.require("taskview.core");
 
-var description_layer = function(tid){
+var description_layer = function(tid,type){
 	layer.open({
 		type: 2,			//iframe
 		title: 'Add Status',
 		shadeClose: true,
 		shade: 0.5,
 		area: ['600px', '60%'],
-		content: "/add_status?id=" + tid,
+		content: "/comment?id=" + tid + "&typ=" + type,
 		btn: "Close",
 		yes: function(index,layero){
 			parent.location.reload(); 
