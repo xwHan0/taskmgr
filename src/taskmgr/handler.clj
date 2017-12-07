@@ -22,15 +22,20 @@
   (GET "/edit_task" [id] (task-create/page (Integer/parseInt id)))
   (GET "/delete_task" [id])
   
-  (GET "/comment" [id typ] (status-add/page (Integer/parseInt id) typ))
-
-  (GET "/add_status" [id] (status-add/page (Integer/parseInt id)))
+  (GET "/add_status" [id] (status-add/page :tid (Integer/parseInt id) :href (str "add_status?id=" id)))
   (POST "/add_status" [id start finish status owner complete description]
-    (do 
-      (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :complete complete :status status :description description :owner owner})
-      #_(ring.util.response/redirect (str "/task?id=" id))))
+    (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :complete complete :status status :description description :owner owner}))
 
-  (GET "/add_comment" [] (db/add-comment {:tid 4 :type 0 :content "Initial version."}))
+  (GET "/add_record" [] (status-add/page :status? false :href "add_record"))
+  (POST "/add_record" [start finish owner description]
+    (db/add-status {:start start :finish finish :description description :owner owner}))
+
+  (GET "/add_comment" [id] (status-add/page :tid id :status? false :href (str "add_comment" id)))
+  (POST "/add_comment" [id start finish owner description]
+    (db/add-status {:tid id :start start :finish finish :description description :owner owner}))
+
+
+  ;(GET "/add_comment" [] (db/add-comment {:tid 4 :type 0 :content "Initial version."}))
   (GET "/read_task_status" [] (db/read-task-status 4 "2018-01-01"))
   
   (GET "/report" [id date] (weekly-report/page (Integer/parseInt id) date))

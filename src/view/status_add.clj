@@ -21,11 +21,8 @@
     [:span "Start: "] [:input#start {:type "datetime-local" :name "start" }]
     [:span "Finish: "] [:input#finish {:type "datetime-local" :name "finish" }]])
     
-(defn page [tid & cid]
+(defn page [& {:keys [tid cid status? href]}]
   (let [
-    cid (first cid)
-    typ (second cid)
-    typ (if typ typ "status")
     {:keys [status owner complete content start finish]} (last (db/read-descriptions tid cid))
   ]
     (util/page
@@ -35,11 +32,10 @@
         "js/taskview.js"
       ]
       ["css/taskadd.css"]
-      [:form#task_cnxt {:method "post" :action (str "/add_status?id=" tid)}
+      [:form#task_cnxt {:method "post" :action href}
         (owner-field owner)
-        (cond
-          (= typ "status") (status-field complete status)
-          )
+        (when status?
+           (status-field complete status))
         (date-field start finish)
         [:textarea#descriptin {:name "description"} content]
         [:input {:type "submit" :value "submit"}]
