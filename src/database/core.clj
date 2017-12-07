@@ -59,7 +59,9 @@
               WHERE x.tid=" tid (if cid (str " cid=" cid) "") " "
               " ORDER by x.finish")
   ]
-    (query db [sql])))
+    (if (and (nil? tid) (nil? cid))
+      {}
+      (query db [sql]))))
 
 (defn add-task [{:keys [pid owner due title description] :as task}]
   (let [tid (insert-db db :tasks {:due due :title title :pid pid})]
@@ -75,7 +77,7 @@
     
 (defn add-status [{:keys [tid start finish owner complete status description] :as in}]
   (let [
-    tid (if (zero? tid) nil tid)
+    tid (cond (nil? tid) nil (zero? tid) nil :else tid)
     did (insert-db db :descriptions {:tid tid :start start :finish finish :owner owner :content description})
     ]
     (cond

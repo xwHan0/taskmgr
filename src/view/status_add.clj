@@ -21,7 +21,7 @@
     [:span "Start: "] [:input#start {:type "datetime-local" :name "start" }]
     [:span "Finish: "] [:input#finish {:type "datetime-local" :name "finish" }]])
     
-(defn page [& {:keys [tid cid status? href]}]
+(defn page [& {:keys [tid cid status? date? href]}]
   (let [
     {:keys [status owner complete content start finish]} (last (db/read-descriptions tid cid))
   ]
@@ -34,9 +34,8 @@
       ["css/taskadd.css"]
       [:form#task_cnxt {:method "post" :action href}
         (owner-field owner)
-        (when status?
-           (status-field complete status))
-        (date-field start finish)
+        (when status? (status-field complete status))
+        (when date? (date-field start finish))
         [:textarea#descriptin {:name "description"} content]
         [:input {:type "submit" :value "submit"}]
         (anti-forgery-field)

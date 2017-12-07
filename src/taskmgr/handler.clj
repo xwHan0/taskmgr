@@ -26,13 +26,13 @@
   (POST "/add_status" [id start finish status owner complete description]
     (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :complete complete :status status :description description :owner owner}))
 
-  (GET "/add_record" [] (status-add/page :status? false :href "add_record"))
+  (GET "/add_record" [] (status-add/page :date? true :href "add_record"))
   (POST "/add_record" [start finish owner description]
     (db/add-status {:start start :finish finish :description description :owner owner}))
 
-  (GET "/add_comment" [id] (status-add/page :tid id :status? false :href (str "add_comment" id)))
+  (GET "/add_comment" [id] (status-add/page :tid id :href (str "add_comment?id=" id)))
   (POST "/add_comment" [id start finish owner description]
-    (db/add-status {:tid id :start start :finish finish :description description :owner owner}))
+    (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :description description :owner owner}))
 
 
   ;(GET "/add_comment" [] (db/add-comment {:tid 4 :type 0 :content "Initial version."}))
