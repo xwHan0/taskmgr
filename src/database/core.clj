@@ -76,7 +76,7 @@
 (defn add-status [{:keys [tid start finish owner complete status description] :as in}]
   (let [
     tid (if (zero? tid) nil tid)
-    did (insert-db db :descriptions (into in {:tid tid}))
+    did (insert-db db :descriptions {:tid tid :start start :finish finish :owner owner :content description})
     ]
     (cond
       (and tid (or complete status))

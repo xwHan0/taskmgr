@@ -22,7 +22,7 @@
   (GET "/edit_task" [id] (task-create/page (Integer/parseInt id)))
   (GET "/delete_task" [id])
   
-  (GET "/add_status" [id] (status-add/page :tid (Integer/parseInt id) :href (str "add_status?id=" id)))
+  (GET "/add_status" [id] (status-add/page :tid (Integer/parseInt id) :status? true :href (str "add_status?id=" id)))
   (POST "/add_status" [id start finish status owner complete description]
     (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :complete complete :status status :description description :owner owner}))
 
