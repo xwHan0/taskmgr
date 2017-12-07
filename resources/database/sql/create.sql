@@ -2,10 +2,12 @@
 
 --drop table tasks; --- Do not need when rename Table using ALTER 
 
---CREATE TABLE descriptions
---(
-  --id INTEGER PRIMARY KEY AUTOINCREMENT,
-  --cid INTEGER default 0,
+CREATE TABLE milestones
+(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  cid INTEGER default 0,
+  tid INTEGER default 0,
+  type,class
 
   -- tasks Table
   --pid INTEGER default 0, title
@@ -21,8 +23,8 @@
   --type integer --comments
   --status, type, class, owner  --select_lists
   --type integer, owner integer, date TIMESTAMP DEFAULT (datetime('now','localtime')), content, duration default 0.5 --descriptions
---);
+);
 
 --INSERT INTO descriptions(id,tid,type,owner,content,duration,date) select id,tid,type,owner,content,duration,date from temp;
 
-drop table temp;
+--drop table temp;
