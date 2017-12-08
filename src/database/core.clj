@@ -1,7 +1,9 @@
 (ns database.core
   (:require 
     [clojure.java.jdbc :refer :all]
-    [debux.core :refer :all]))
+    [clj-time.core :as t]
+    [clj-time.format :as tf]
+    ))
 
 ;
 (def generated-key (keyword "last_insert_rowid()"))
@@ -78,6 +80,8 @@
 (defn add-status [{:keys [tid start finish owner complete status description] :as in}]
   (let [
     tid (cond (nil? tid) nil (zero? tid) nil :else tid)
+    finish (if finish finish 
+      (tf/unparse (tf/formatter "yyyy-MM-dd") (t/to-time-zone (t/now) (t/default-time-zone)))
     did (insert-db db :descriptions {:tid tid :start start :finish finish :owner owner :content description})
     ]
     (cond

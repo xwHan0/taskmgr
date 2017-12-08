@@ -2,7 +2,6 @@
   (:require [clojure.core.ex :refer :all] 
             [hiccup.core :refer :all]
             [hiccup.page :refer :all]
-            [debux.core :refer :all]
             [clj-time.core :as t]
             [clj-time.format :as tf]
             [view.util :as util]
@@ -38,7 +37,7 @@
       (if (first date)
         (first date)
         (tf/unparse custom-format (t/to-time-zone (t/now) (t/default-time-zone))))
-    current (tf/parse custom-format date)
+    current (t/plus (tf/parse custom-format date) (t/days 1))
     intervals (map #(t/weeks %) (reverse (range 4)))
     dates (map #(t/minus current %) intervals)
     dates (map #(tf/unparse custom-format %) dates)

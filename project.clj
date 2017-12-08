@@ -8,9 +8,6 @@
                  [org.clojure/core.ex "0.1.0"]
                  [hiccup/hiccup "1.0.5"]
 
-                ;
-                [philoskim/debux "0.3.12"]
-
                  ;For database
                  [org.clojure/java.jdbc "0.7.3"]
                  [org.xerial/sqlite-jdbc "3.15.1"]
