@@ -20,6 +20,8 @@
   ]
     (+ offset len)))
 
+
+
 (defn- svg-milestone [{:keys [x date title]}]
   [:g 
     [:text {:y 36}
@@ -41,11 +43,15 @@
           [:stop {:offset "0%" :style "stop-color:rgb(255,255,0);stop-opacity:1"}]
           [:stop {:offset "100%" :style "stop-color:rgb(255,0,0);stop-opacity:1"}]]
         [:g#milestone
-          [:path {:d "M0 0 L10 0 L5 20 Z" :fill "red"}]]]
+          [:path {:d "M0 0 L10 0 L5 20 Z" :fill "red"}]]
+        [:g#dcp
+          [:line {:x1 20 :y1 0 :x2 20 :y2 100 :stroke "green"}]
+          [:path {:d "M10 100 L30 100 L30 160 L40 160 L20 180 L0 160 L10 160 Z"}]]]
       [:path {:d "M50 60 L350 80 L1050 80 L1050 60 L1080 100 L1050 140 L1050 120 L350 120 L50 140 Z" :fill "url(#orange_red)" :stroke "black"}]
       (svg-milestone {:x mx :date "2017-12-01" :title "TR1"})
       (svg-milestone {:x 350 :date "2017-12-01" :title "TR1"})
       (svg-milestone {:x 650 :date "2017-12-01" :title "TR1"})
+      [:use {:xlink:href "#dcp" :x 100 :y 60}]
       ]))
 
 (defn page []
