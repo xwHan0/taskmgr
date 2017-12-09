@@ -2,15 +2,18 @@
 
 --drop table tasks; --- Do not need when rename Table using ALTER 
 
-CREATE TABLE milestones
+CREATE TABLE tasks
 (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   cid INTEGER default 0,
-  tid INTEGER default 0,
-  type,class
+  --tid INTEGER default 0,
+  --type,class
 
   -- tasks Table
-  --pid INTEGER default 0, title
+  pid INTEGER default 0, 
+  title,
+  due TIMESTAMP DEFAULT (datetime('now','localtime')),
+  type default "sub"
 
   -- descriptions Table
   --tid INTEGER default 0, type, owner, content,duration default 0.5,

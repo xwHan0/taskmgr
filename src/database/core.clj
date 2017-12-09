@@ -65,10 +65,10 @@
       {}
       (query db [sql]))))
 
-(defn add-task [{:keys [pid owner due title description] :as task}]
-  (let [tid (insert-db db :tasks {:due due :title title :pid pid})]
+(defn add-task [{:keys [pid type due title owner start finish description] :as task}]
+  (let [tid (insert-db db :tasks {:due due :type type :title title :pid pid})]
     (when (or owner description)
-      (let [did (insert-db db :descriptions {:tid tid :owner owner :content description})]
+      (let [did (insert-db db :descriptions {:tid tid :owner owner :start start :finish finish :content description})]
         (update! db :tasks {:cid did} ["id = ?" tid])))
     "Add success!"))
  
@@ -81,12 +81,11 @@
   (let [
     tid (cond (nil? tid) nil (zero? tid) nil :else tid)
     finish (if finish finish 
-      (tf/unparse (tf/formatter "yyyy-MM-dd") (t/to-time-zone (t/now) (t/default-time-zone)))
+      (tf/unparse (tf/formatter "yyyy-MM-dd") (t/to-time-zone (t/now) (t/default-time-zone))))
     did (insert-db db :descriptions {:tid tid :start start :finish finish :owner owner :content description})
     ]
     (cond
       (and tid (or complete status))
         (do (insert-db db :status {:tid tid :cid did :complete complete :status status}) "Add status success!")
       :else "Add record success!")))
-
 

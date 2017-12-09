@@ -32,7 +32,7 @@
 (defn- sym-dcp []
   (let []
     [:g#dcp
-      [:line {:x1 20 :y1 0 :x2 20 :y2 150 :stroke "blue" :stroke-dasharray 5}]
+      [:line {:x1 20 :y1 0 :x2 20 :y2 150 :stroke "blue" }]
       [:path {:d "M20 150 L40 170 L30 170 L30 230 L10 230 L10 170 L0 170 Z"}]]))
 
 (defn- milestone-svg []
@@ -65,9 +65,9 @@
       ;JS
       []
       ;CSS
-      []
+      ["css/milestone.css"]
       ;Component
       [:h2 "Milestone"]
-      "<?xml-stylesheet href='mystyle.css' type='text/css'?>"
+      ; "<?xml-stylesheet href='css/milestone.css' type='text/css'?>"
       (milestone-svg)
     )))
