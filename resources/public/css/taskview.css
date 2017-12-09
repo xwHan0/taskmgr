@@ -15,6 +15,13 @@ div#task_comment_new {
 	background: #FFFFFF;
 }
 
+div#task_description {
+	padding: 0.2em;
+	margin: 0.5em;
+	border: 1px solid #EEEEEE;
+	background: #FFFFFF;
+}
+
 div#task_title_title {
 	font: bold 36px arial,sans-serif;
 	color: #0088AA;

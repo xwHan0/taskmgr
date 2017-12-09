@@ -114,6 +114,9 @@
         (title-componment task-info (db/read-ancestor-tasks tid))
         (task-commands tid)
         (attribute-componment task-info)
+        (when (:content task-info)
+          [:div
+            [:div#task_description (:content task-info)]])
         (when (not-empty sub-tasks-info)
           (subtask-componment sub-tasks-info))
         (comment-componment (db/read-descriptions tid))

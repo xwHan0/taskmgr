@@ -41,7 +41,7 @@
   (let [
     sql (str "SELECT x.id,x.title,x.due,y.owner
               FROM tasks x left outer join descriptions y on x.cid=y.id 
-              WHERE x.pid=" tid)
+              WHERE x.type='sub' and x.pid=" tid)
     ]
     (query db [sql])))
 
