@@ -26,9 +26,12 @@
   (POST "/add_status" [id start finish status owner complete description]
     (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :complete complete :status status :description description :owner owner}))
 
+  (GET "/add_record" [id] (status-add/page :date? true :href (str "add_record?id=" id)))
   (GET "/add_record" [] (status-add/page :date? true :href "add_record"))
-  (POST "/add_record" [start finish owner description]
-    (db/add-status {:start start :finish finish :description description :owner owner}))
+  (POST "/add_record" [id start finish owner description]
+    (if id
+      (db/add-status {:id (Integer/parseInt id) :start start :finish finish :description description :owner owner})
+      (db/add-status {:start start :finish finish :description description :owner owner})))
 
   (GET "/add_comment" [id] (status-add/page :tid id :href (str "add_comment?id=" id)))
   (POST "/add_comment" [id start finish owner description]
@@ -39,7 +42,7 @@
   (GET "/read_task_status" [] (db/read-task-status 4 "2018-01-01"))
   
   (GET "/report" [id date] (weekly-report/page (Integer/parseInt id) date))
-  (GET "/milestone" [] (milestone/page))
+  (GET "/milestone" [id] (milestone/page (Integer/parseInt id)))
 
   ;Test
   (GET "/test000" [] (str (db/read-ancestor-tasks 8)))

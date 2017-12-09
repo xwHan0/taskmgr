@@ -41,6 +41,7 @@
     intervals (map #(t/weeks %) (reverse (range 4)))
     dates (map #(t/minus current %) intervals)
     dates (map #(tf/unparse custom-format %) dates)
+    {:keys [status content]} (db/read-task-status tid date)
     ]
     (util/page
       ;JS
@@ -48,6 +49,6 @@
       ;CSS
       ["css/table.css" "css/report.css"]
       ;Component
-      [:h2 (->> tid db/read-task :title)]
-      [:p (:content (db/read-task-status tid date))]
+      [:h2 (->> tid db/read-task :title) [:img {src (str "img/" status ".png")}]]
+      [:p content]
       (detail-tbl dates tid))))

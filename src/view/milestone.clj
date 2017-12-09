@@ -44,13 +44,12 @@
       [:tspan {:x (- x 5) :dy 20} title]]
     [:use {:xlink:href "#dcp" :x x :y 10}]])
 
-(defn- milestone-svg []
+(defn- milestone-svg [milestones]
   (let [
-    start "2017-11-1"
-    finish "2018-5-30"
-    st (parse-date start)
-    ed (parse-date finish)
-    mx (milestone-x (parse-date "2018-1-30") st (in-days st ed) 1000 50)
+    st (parse-date (-> milestones first :due))
+    ed (parse-date (-> milestones last :due))
+    dueTask (in-days st ef)
+    milestones (-> milestones butlast)
   ] 
     [:svg {:width 1100 :height 400 :xmlns "http://www.w3.org/2000/svg" :xmlns:xlink "http://www.w3.org/1999/xlink"}
       [:defs
@@ -59,16 +58,18 @@
           [:stop {:offset "100%" :style "stop-color:rgb(255,100,0);stop-opacity:1"}]]
         (sym-tr)
         (sym-dcp)]
-      [:path {:d "M50 60 L350 80 L1050 80 L1050 60 L1080 100 L1050 140 L1050 120 L350 120 L50 140 Z" :fill "url(#orange_red)" :stroke "black"}]
-      (svg-tr {:x mx :date "2017-12-01" :title "TR1"})
-      (svg-tr {:x 350 :date "2017-12-01" :title "TR1"})
-      (svg-tr {:x 650 :date "2017-12-01" :title "TR1"})
-      (svg-dcp {:x 700 :date "2017-01-01" :title "Cechk"})
+      [:path {:d "M50 80 L350 80 L1050 80 L1050 60 L1080 100 L1050 140 L1050 120 L350 120 L50 120 Z" :fill "url(#orange_red)" :stroke "black"}]
+      (for [{:keys [due title type]} milestones]
+        (let [mx (milestone-x (parse-date due) st dueTask 1000 50)
+              content {:x mx :date due :title title}]
+          (cond (= type "tr") (svg-tr content)
+                (= type "dcp") (svg-dcp content))))
       ]))
 
-(defn page []
+(defn page [tid]
   (let [
-        ]
+    milestones (db/read-milestones tid)
+  ]
     (util/page
       ;JS
       []
@@ -77,5 +78,5 @@
       ;Component
       [:h2 "Milestone"]
       ; "<?xml-stylesheet href='css/milestone.css' type='text/css'?>"
-      (milestone-svg)
+      (milestone-svg milestones)
     )))

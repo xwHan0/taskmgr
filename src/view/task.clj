@@ -48,11 +48,12 @@
         [:ul
         [:li [:a {:href (str "javascript: description_layer(" tid ", '/add_comment?id=" tid "')")} "Add Comment"]]
         [:li [:a {:href (str "javascript: description_layer(" tid ", '/add_status?id=" tid "')")} "Add Status"]]
+        [:li [:a {:href (str "javascript: description_layer(" tid ", '/add_record?id=" tid "')")} "Add Record"]]
         [:li "--------------------------"]
         [:li [:a {:href (str "javascript: description_layer(0, '/add_record')")} "Add Global Record"]]
         ]]
       [:li [:a {:href (str "/report?id=" tid)}  "Report"]]
-      [:li [:a {:href (str "/milestone")}  "Milestone"]]
+      [:li [:a {:href (str "/milestone?id=" tid)}  "Milestone"]]
       ]])
 
 (defn- subtask-componment [subtasks]
