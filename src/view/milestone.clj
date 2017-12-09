@@ -20,20 +20,29 @@
   ]
     (+ offset len)))
 
-
-
-(defn- svg-milestone [{:keys [x date title]}]
-  [:g 
-    [:text {:y 36}
-      [:tspan {:x (- x 25) :dy 0} date]
-      [:tspan {:x (- x 5) :dy 20} title]]
-    [:use {:xlink:href "#milestone" :x x :y 60}]])
+(defn- sym-tr []
+  [:g#tr
+    [:path {:d "M0 0 L10 0 L5 20 Z" :fill "red"}]])
 
 (defn- sym-dcp []
   (let []
     [:g#dcp
-      [:line {:x1 20 :y1 0 :x2 20 :y2 150 :stroke "blue" }]
-      [:path {:d "M20 150 L40 170 L30 170 L30 230 L10 230 L10 170 L0 170 Z"}]]))
+      [:line {:x1 20 :y1 0 :x2 20 :y2 150  }]
+      [:path {:d "M20 150 L40 170 L30 170 L30 210 L10 210 L10 170 L0 170 Z"}]]))
+
+(defn- svg-tr [{:keys [x date title]}]
+  [:g 
+    [:text {:y 36}
+      [:tspan {:x (- x 25) :dy 0} date]
+      [:tspan {:x (- x 5) :dy 20} title]]
+    [:use {:xlink:href "#tr" :x x :y 60}]])
+
+(defn- svg-dcp [{:keys [x date title]}]
+  [:g 
+    [:text {:y 245}
+      [:tspan {:x (- x 25) :dy 0} date]
+      [:tspan {:x (- x 5) :dy 20} title]]
+    [:use {:xlink:href "#dcp" :x x :y 10}]])
 
 (defn- milestone-svg []
   (let [
@@ -47,15 +56,14 @@
       [:defs
         [:linearGradient#orange_red {:x1 "0%" :y1 "0%" :x2 "100%" :y2 "0%"}
           [:stop {:offset "0%" :style "stop-color:rgb(255,255,0);stop-opacity:1"}]
-          [:stop {:offset "100%" :style "stop-color:rgb(255,0,0);stop-opacity:1"}]]
-        [:g#milestone
-          [:path {:d "M0 0 L10 0 L5 20 Z" :fill "red"}]]
+          [:stop {:offset "100%" :style "stop-color:rgb(255,100,0);stop-opacity:1"}]]
+        (sym-tr)
         (sym-dcp)]
       [:path {:d "M50 60 L350 80 L1050 80 L1050 60 L1080 100 L1050 140 L1050 120 L350 120 L50 140 Z" :fill "url(#orange_red)" :stroke "black"}]
-      (svg-milestone {:x mx :date "2017-12-01" :title "TR1"})
-      (svg-milestone {:x 350 :date "2017-12-01" :title "TR1"})
-      (svg-milestone {:x 650 :date "2017-12-01" :title "TR1"})
-      [:use {:xlink:href "#dcp" :x 100 :y 60}]
+      (svg-tr {:x mx :date "2017-12-01" :title "TR1"})
+      (svg-tr {:x 350 :date "2017-12-01" :title "TR1"})
+      (svg-tr {:x 650 :date "2017-12-01" :title "TR1"})
+      (svg-dcp {:x 700 :date "2017-01-01" :title "Cechk"})
       ]))
 
 (defn page []

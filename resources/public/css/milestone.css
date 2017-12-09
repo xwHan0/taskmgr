@@ -1,3 +1,8 @@
-#dcp {
+#dcp line {
     stroke-dasharray: 5;
+    stroke: blue;
+}
+
+#dcp {
+    fill: blue;
 }
