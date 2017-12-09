@@ -19,6 +19,14 @@
   [:div#field
     [:span "Due Date: "] [:input#date {:type "date" :name "due" :size 10}]])
 
+(defn- type-field [type]
+  [:div#field
+    [:span "Type: "] [:input#type {:type "text" :name "type" :size 10}]])
+
+(defn- class-field [class]
+  [:div#field
+    [:span "class: "] [:input#class {:type "text" :name "class" :size 10}]])
+
 (defn page [tid]
   (let [task-info (into (db/read-task-status tid) (db/read-task tid))]
     (util/page
@@ -30,10 +38,8 @@
       ["css/taskadd.css"]
       [:form#task_cnxt {:method "post" :action (str "/add_task?id=" tid)}
         (title-field "")
-        (owner-field "")
-        (due-field "")
-        ; [:input#due {:type "date" :name "due"}]
-        ; [:input#owner {:type "text" :name "owner"}]
+        [:div (owner-field "") (due-field "")]
+        [:div (type-field "") (class-field "")]
         [:textarea#descriptin {:name "description"}]
         [:input {:type "submit"}]
         (anti-forgery-field)

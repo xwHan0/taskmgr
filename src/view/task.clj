@@ -38,13 +38,11 @@
 (defn- task-commands [tid]
   [:div#task_command_bar
     [:ul#nav
-      [:li [:a {:href (str "/add_task?id=" tid)} "Add Task"]]
       [:li [:a {:href (str "#" tid)} "Task"]
         [:ul 
-          [:li [:a {:href (str "/add_status?id=" tid)} "Add Sub Task"]]
+          [:li [:a {:href (str "/add_task?id=" tid)} "Add Sub Task"]]
           [:li
-            [:a {:href (str "javascript:")} 
-              "Edit Task"]]
+            [:a {:href (str "javascript:")} "Edit Task"]]
           [:li [:a {:href (str "/add_status?id=" tid)} "Delete Task"]]]]
       [:li [:a {:href "#"} "Comment"]
         [:ul
@@ -86,10 +84,11 @@
     (apply vector :div 
           {:id "task_comment_history"}
           (map comment-componment-history comments))
-    [:div {:id "task_comment_new"}
-    [:textarea {:id "comment" :name "comment"}]
-    [:br]
-    [:input {:type "button" :id "comment" :name "comment" :value "comment"}]]])
+    ; [:div {:id "task_comment_new"}
+    ; [:textarea {:id "comment" :name "comment"}]
+    ; [:br]
+    ; [:input {:type "button" :id "comment" :name "comment" :value "comment"}]]
+    ])
 
 (defn page [tid]
   (let [
@@ -115,7 +114,8 @@
         (title-componment task-info (db/read-ancestor-tasks tid))
         (task-commands tid)
         (attribute-componment task-info)
-        (subtask-componment sub-tasks-info)
+        (when (not-empty sub-tasks-info)
+          (subtask-componment sub-tasks-info))
         (comment-componment (db/read-descriptions tid))
       ]
       )))
