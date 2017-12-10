@@ -5,9 +5,11 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [taskview.view :as taskview]
             [view.weekly-report :as weekly-report]
+            [view.report.issue :as issue]
             [view.task :as task]
             [view.task-create :as task-create]
             [view.status-add :as status-add]
+            [view.milestone-add :as milestone-add]
             [view.milestone :as milestone]))
 
 (defroutes app-routes
@@ -37,15 +39,14 @@
   (POST "/add_comment" [id start finish owner description]
     (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :description description :owner owner}))
 
-
-  ;(GET "/add_comment" [] (db/add-comment {:tid 4 :type 0 :content "Initial version."}))
-  (GET "/read_task_status" [] (db/read-task-status 4 "2018-01-01"))
   
-  (GET "/report" [id date] (weekly-report/page (Integer/parseInt id) date))
-  (GET "/milestone" [id] (milestone/page (Integer/parseInt id)))
+  (GET "/report_plan" [id date] (weekly-report/page (Integer/parseInt id) date))
+  (GET "/report_issue" [id date] (issue/page (Integer/parseInt id) date))
 
-  ;Test
-  (GET "/test000" [] (str (db/read-ancestor-tasks 8)))
+  (GET "/add_milestone" [id] (milestone-add/page (Integer/parseInt id)))
+  (POST "/add_milestone" [id title type class start finish description] 
+        (db/add-milestone {:tid (Integer/parseInt id) :title title :type type :class class :start start :finish finish :description description}))
+  (GET "/milestone" [id] (milestone/page (Integer/parseInt id)))
 
   (route/not-found "Not Found"))
 

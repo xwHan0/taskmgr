@@ -3,6 +3,7 @@
     [clojure.core.ex :refer :all]
     [clj-time.core :as t]
     [clj-time.format :as tf]
+    [database.core :as db]
     [view.util :as util]))
 
 (def task-format (tf/formatter "yyyy-MM-dd"))
@@ -46,9 +47,9 @@
 
 (defn- milestone-svg [milestones]
   (let [
-    st (parse-date (-> milestones first :due))
-    ed (parse-date (-> milestones last :due))
-    dueTask (in-days st ef)
+    st (parse-date (-> milestones first :finish))
+    ed (parse-date (-> milestones last :finish))
+    dueTask (in-days st ed)
     milestones (-> milestones butlast)
   ] 
     [:svg {:width 1100 :height 400 :xmlns "http://www.w3.org/2000/svg" :xmlns:xlink "http://www.w3.org/1999/xlink"}

@@ -41,8 +41,7 @@
       [:li [:a {:href (str "#" tid)} "Task"]
         [:ul 
           [:li [:a {:href (str "/add_task?id=" tid)} "Add Sub Task"]]
-          [:li
-            [:a {:href (str "javascript:")} "Edit Task"]]
+          [:li [:a {:href (str "javascript:")} "Edit Task"]]
           [:li [:a {:href (str "/add_status?id=" tid)} "Delete Task"]]]]
       [:li [:a {:href "#"} "Comment"]
         [:ul
@@ -52,8 +51,16 @@
         [:li "--------------------------"]
         [:li [:a {:href (str "javascript: description_layer(0, '/add_record')")} "Add Global Record"]]
         ]]
-      [:li [:a {:href (str "/report?id=" tid)}  "Report"]]
-      [:li [:a {:href (str "/milestone?id=" tid)}  "Milestone"]]
+      [:li [:a {:href "#"}  "Report"]
+        [:ul 
+        [:li [:a {:href (str "/report_plan?id=" tid)}  "Plan Trace"]]
+        [:li [:a {:href (str "/report_issue?id=" tid)}  "Issue Trace"]]
+        ]]
+      [:li [:a {:href "#"}  "Milestone"]
+        [:ul
+        [:li [:a {:href (str "/add_milestone?id=" tid)}  "Add Milestone"]]
+        [:li [:a {:href (str "/milestone?id=" tid)}  "Show Milestones"]]
+        ]]
       ]])
 
 (defn- subtask-componment [subtasks]

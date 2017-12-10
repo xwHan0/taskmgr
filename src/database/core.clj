@@ -41,7 +41,7 @@
   (let [
     sql (str "SELECT x.id,x.title,x.due,y.owner
               FROM tasks x left outer join descriptions y on x.cid=y.id 
-              WHERE x.type='sub' and x.pid=" tid)
+              WHERE x.pid=" tid)
     ]
     (query db [sql])))
 
@@ -64,6 +64,8 @@
     (if (and (nil? tid) (nil? cid))
       {}
       (query db [sql]))))
+
+
 
 (defn add-task [{:keys [pid type due title owner start finish description] :as task}]
   (let [tid (insert-db db :tasks {:due due :type type :title title :pid pid})]
@@ -89,3 +91,14 @@
         (do (insert-db db :status {:tid tid :cid did :complete complete :status status}) "Add status success!")
       :else "Add record success!")))
 
+(defn add-milestone [{:keys [tid title type class start finish description]}]
+  (let [did (insert-db db :descriptions {:tid tid :start start :finish finish :content description})]
+    (insert-db db :milestones {:tid tid :cid did :title title :type type :class class})
+    "Add milestone success!"))
+
+(defn read-milestones [tid]
+  (let [sql (str "SELECT x.title,x.type,x.class,y.start,y.finish,y.content 
+          FROM milestones x, descriptions y 
+          WHERE x.tid=" tid " and x.cid=y.id 
+          ORDER by y.finish")]
+    (query db [sql])))

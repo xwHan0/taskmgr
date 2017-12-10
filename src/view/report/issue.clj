@@ -1,4 +1,4 @@
-(ns view.weekly-report
+(ns view.report.issue
   (:require [clojure.core.ex :refer :all] 
             [hiccup.core :refer :all]
             [hiccup.page :refer :all]
@@ -22,13 +22,13 @@
     task-status (map #(assoc %1 :status %2) sub-tasks sub-tasks-status)
   ]
     [:table 
-      [:thead [:tr [:th "Task"] [:th "Due"] (for [d dates] [:th d])]]
+      [:thead [:tr [:th "Issue"] [:th "Owner"] [:th "Description"] [:th "Status"]]]
       [:tbody
-        (for [{:keys [title owner status due]} task-status]
-          [:tr [:td.report_tasks_title [:div.task_title title] [:div#task_owner owner]]
-            [:td due]
-            (for [{:keys [complete status content] :or {complete 0 status "gray"}} status]
-              [:td [:div.report_complete [:img {:src (str "img/" status ".png")}] complete "%" ] [:div content]])])]]))
+        (for [{:keys [title owner status]} task-status]
+          [:tr [:td title] [:td owner]
+            [:td (for [{:keys [content finish] :or {}} status]
+              (when (and finish content) [:div "[" finish "]" content]))]
+            [:td (-> status last :status)]])]]))
 
 (defn page [tid & date]
   (let [
