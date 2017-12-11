@@ -37,6 +37,15 @@
     items (query db [sql])]
     (-> items last)))
 
+(defn read-task-statuses [tid]
+  (let [
+    date (first date)
+    sql (str "SELECT x.complete, x.status, y.content, y.owner, y.start, y.finish FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
+    sql (str sql "order by y.finish")
+    items (query db [sql])]
+    items))
+
+
 (defn read-sub-tasks [tid]
   (let [
     sql (str "SELECT x.id,x.title,x.due,y.owner

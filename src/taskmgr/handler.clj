@@ -31,7 +31,7 @@
   (GET "/add_record" [id] (status-add/page :date? true :href (str "add_record?id=" id)))
   (GET "/add_record" [] (status-add/page :date? true :href "add_record"))
   (POST "/add_record" [id start finish owner description]
-    (if id
+    (if-not (= "" id)
       (db/add-status {:id (Integer/parseInt id) :start start :finish finish :description description :owner owner})
       (db/add-status {:start start :finish finish :description description :owner owner})))
 
