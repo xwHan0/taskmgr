@@ -7,7 +7,7 @@
             [view.util :as util]
             [database.core :as db]))
 
-(defn- detail-tbl [dates tid]
+(defn- detail-tbl [tid]
   "按照任务集成列表生成继承链接。parent-task-vector格式为：[{:title :id}]
   task-status ::= [{title owner status}...]
   status ::= [{complete status content}]
@@ -17,8 +17,7 @@
     sub-tasks-id (map :id sub-tasks)
     sub-tasks-status
       (for [tid sub-tasks-id]
-        (for [date dates]
-          (db/read-task-status tid date)))
+        (db/read-task-statuses tid))
     task-status (map #(assoc %1 :status %2) sub-tasks sub-tasks-status)
   ]
     [:table 
@@ -51,4 +50,4 @@
       ;Component
       [:h2 (->> tid db/read-task :title) [:img {:src (str "img/" status ".png")}]]
       [:p content]
-      (detail-tbl dates tid))))
+      (detail-tbl tid))))

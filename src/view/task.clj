@@ -70,7 +70,7 @@
         [:thead
         [:tr [:th "No."] [:th "Title"] [:th "Owner"] [:th "Status"]]]
         (apply vector :tbody
-            (for [{:keys [id title owner status]} subtasks]
+            (for [{:keys [id title owner status] :or {owner "xwhan" status "Open"}} subtasks]
                 [:tr [:td id] [:td [:a {:href (str "/task?id=" id)} title]] [:td owner] [:td status]]))]])
       
 

@@ -4,7 +4,7 @@
             [database.core :as db]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [taskview.view :as taskview]
-            [view.weekly-report :as weekly-report]
+            [view.report.weekly :as weekly-report]
             [view.report.issue :as issue]
             [view.task :as task]
             [view.task-create :as task-create]

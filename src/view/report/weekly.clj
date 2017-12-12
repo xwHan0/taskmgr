@@ -1,4 +1,4 @@
-(ns view.weekly-report
+(ns view.report.weekly
   (:require [clojure.core.ex :refer :all] 
             [hiccup.core :refer :all]
             [hiccup.page :refer :all]
