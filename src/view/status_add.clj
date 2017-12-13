@@ -23,7 +23,7 @@
     
 (defn page [& {:keys [tid cid status? date? href]}]
   (let [
-    {:keys [status owner complete content start finish]} (last (db/read-descriptions tid cid))
+    {:keys [status owner complete content start finish]} (last (db/read-descriptions :tid tid :cid cid))
   ]
     (util/page
       [

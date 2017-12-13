@@ -1,2 +1,2 @@
 -- Add column
-alter table tasks add due TIMESTAMP;
+alter table pass add sn2;

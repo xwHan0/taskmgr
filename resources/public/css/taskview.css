@@ -86,6 +86,7 @@ div#task_comment_ctrl {
 	display: flex;
 	/*container: row | row-reverse | column | column-reverse*/
 	flex-direction: row;
+	justify-content: space-between;
 }
 
 div#task_comment_cnxt {

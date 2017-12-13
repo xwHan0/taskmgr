@@ -33,14 +33,14 @@
     date (first date)
     sql (str "SELECT x.complete, x.status, y.content, y.owner, y.start, y.finish FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
     sql (str sql (if date (str "and datetime(y.finish)<=datetime('" date "') ") " "))
-    sql (str sql "order by y.finish")
+    sql (str sql "order by y.finish ASC")
     items (query db [sql])]
     (-> items last)))
 
 (defn read-task-statuses [tid]
   (let [
     sql (str "SELECT x.complete, x.status, y.content, y.owner, y.start, y.finish FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
-    sql (str sql "order by y.finish")
+    sql (str sql "order by y.finish ASC")
     items (query db [sql])]
     items))
 
@@ -61,12 +61,13 @@
         [{:title title :id tid}]
         (conj (read-ancestor-tasks pid) {:title title :id tid})))))
 
-(defn read-descriptions [tid & cid]
+(defn read-descriptions [& {:keys [tid cid]}]
   (let [
-    cid (first cid)
-    sql (str "SELECT x.start,x.finish,x.owner,x.content,y.complete,y.status 
+    sql (str "SELECT x.id,x.start,x.finish,x.owner,x.content,y.complete,y.status 
               FROM descriptions x left outer join status y on x.id=y.cid 
-              WHERE x.tid=" tid (if cid (str " cid=" cid) "") " "
+              WHERE " 
+              (if tid (str "x.tid=" tid " ")) 
+              (if cid (str "x.id=" cid " ")) 
               " ORDER by x.finish")
   ]
     (if (and (nil? tid) (nil? cid))
@@ -110,3 +111,17 @@
           WHERE x.tid=" tid " and x.cid=y.id 
           ORDER by y.finish")]
     (query db [sql])))
+    
+(defn update-description [& {:keys [id owner start finish description]}]
+  (let [sql (str "UPDATE descriptions SET "
+         "owner=" owner ","
+         "content=" description " "
+         (when start (str ", start=" start))
+         (when finish (str ", finish=" finish))
+         " WHERE id=" id)]
+    (execute! db [sql])
+    "Update description success!"))
+    
+(defn delete-description [id]
+  (let [sql (str "DELETE FROM descriptions WHERE id=" id)]
+    (execute! db [sql])))

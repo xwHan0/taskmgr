@@ -76,10 +76,14 @@
 
 (defn- comment-componment-history
   "按照comments显示历史comment信息"
-  [{:keys [date content owner status complete]}]
+  [{:keys [id finish content owner status complete]}]
   [:div {:id "task_comment_one"}
     [:div {:id "task_comment_ctrl"} 
-      [:div date " by " owner]  [:div " Edit | Delete"] ]
+      [:div finish (when owner " by ") owner]  
+      [:div 
+        [:a {:href (str "/edit_comment?id=" id)} " Edit"] 
+        " | "
+        [:a {:href (str "/delete_comment?id=" id)} "Delete"]]]
     (when status
       [:div#task_comment_ctrl
         [:div "Status: " status " and complete: " complete "%"]])
@@ -122,9 +126,6 @@
         (title-componment task-info (db/read-ancestor-tasks tid))
         (task-commands tid)
         (attribute-componment task-info)
-        (when (:content task-info)
-          [:div
-            [:div#task_description (:content task-info)]])
         (when (not-empty sub-tasks-info)
           (subtask-componment sub-tasks-info))
         (comment-componment (db/read-descriptions tid))

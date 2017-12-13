@@ -38,6 +38,10 @@
   (GET "/add_comment" [id] (status-add/page :tid id :href (str "add_comment?id=" id)))
   (POST "/add_comment" [id start finish owner description]
     (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :description description :owner owner}))
+  (GET "/edit_comment" [id] (status-add/page :cid id :href (str "edit_comment?id=" id)))
+  (POST "/edit_comment" [id owner description]
+    (db/update-status :id (Integer/parseInt id) :owner owner :description description))
+  (GET "/delete_comment" [id] (db/delete-description id))
 
   
   (GET "/report_plan" [id date] (weekly-report/page (Integer/parseInt id) date))

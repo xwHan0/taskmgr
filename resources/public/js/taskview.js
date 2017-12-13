@@ -31,9 +31,14 @@ var description_layer = function(tid,href){
 		shade: 0.5,
 		area: ['600px', '60%'],
 		content: href,
-		btn: "Close",
+		btn: ["Close", "Pop"],
 		yes: function(index,layero){
-			parent.location.reload(); 
+			 parent.location.reload(); 
+			 layer.close(index);
+		},
+		btn2: function(index,layero){
+		  window.open(href);
+		  layer.close(index);
 		}
 		}); 
 }
