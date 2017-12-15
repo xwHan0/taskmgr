@@ -40,7 +40,7 @@
     (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :description description :owner owner}))
   (GET "/edit_comment" [id] (status-add/page :cid id :href (str "edit_comment?id=" id)))
   (POST "/edit_comment" [id owner description]
-    (db/update-status :id (Integer/parseInt id) :owner owner :description description))
+    (db/update-description :id (Integer/parseInt id) :owner owner :description description))
   (GET "/delete_comment" [id] (db/delete-description id))
 
   

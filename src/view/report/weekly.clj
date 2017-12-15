@@ -28,7 +28,7 @@
           [:tr [:td.report_tasks_title [:div.task_title title] [:div#task_owner owner]]
             [:td due]
             (for [{:keys [complete status content] :or {complete 0 status "gray"}} status]
-              [:td [:div.report_complete [:img {:src (str "img/" status ".png")}] complete "%" ] [:div content]])])]]))
+              [:td [:div.report_complete [:img {:src (str "images/" status ".png")}] complete "%" ] [:div content]])])]]))
 
 (defn page [tid & date]
   (let [
@@ -49,6 +49,6 @@
       ;CSS
       ["css/table.css" "css/report.css"]
       ;Component
-      [:h2 (->> tid db/read-task :title) [:img {:src (str "img/" status ".png")}]]
+      [:h2 (->> tid db/read-task :title) [:img {:src (str "images/" status ".png")}]]
       [:p content]
       (detail-tbl dates tid))))

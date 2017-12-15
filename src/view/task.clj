@@ -15,7 +15,7 @@
 (defn- title-componment [{:keys [title]} parent-task-vector]
   "按照task-info的任务信息生产标题显示组件。"  
     [:div {:id "task_title_top"}
-        [:div {:id "task_title_log"} [:img {:src "img/logo.jpg"}]]
+        [:div {:id "task_title_log"} [:img {:src "images/logo.jpg"}]]
         [:div {:id "task_title_info"}
         [:div {:id "task_title_title"} title]
         [:div {:id "task_title_hirechy"} (title-componment-hirechy parent-task-vector)]]])
@@ -128,6 +128,6 @@
         (attribute-componment task-info)
         (when (not-empty sub-tasks-info)
           (subtask-componment sub-tasks-info))
-        (comment-componment (db/read-descriptions tid))
+        (comment-componment (db/read-descriptions :tid tid))
       ]
       )))
