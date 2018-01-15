@@ -50,7 +50,7 @@
     ; sql (str "SELECT x.id,x.title,y.owner
     ;           FROM relations z,tasks x left outer join descriptions y on x.cid=y.id
     ;           WHERE z.tid=x.id z.pid=" tid)
-    sql (str "SELECT x.id,x.title
+    sql (str "SELECT x.id,x.title,x.owner
               FROM tasks x, relations z 
               WHERE x.id=z.tid and z.pid=" tid)
     ]
@@ -59,7 +59,9 @@
 (defn read-ancestor-tasks [tid]
   (if (zero? tid)
     []
-    (let [{:keys [title pid]} (first (query db ["SELECT title,pid FROM tasks WHERE id=?" tid]))]
+    (let [{:keys [title pid]} (first (query db ["SELECT x.title,y.pid 
+                                                 FROM tasks x, relations y 
+                                                 WHERE x.id=y.tid and x.id=?" tid]))]
       (if (zero? pid)
         [{:title title :id tid}]
         (conj (read-ancestor-tasks pid) {:title title :id tid})))))
