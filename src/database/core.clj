@@ -21,7 +21,7 @@
 
 (defn read-task [tid]
   (let [
-    sql (str "SELECT x.id, x.title, x.due, y.owner, y.content, y.finish 
+    sql (str "SELECT x.id, x.title, y.owner, y.content, y.finish 
               FROM tasks x left outer join descriptions y on x.id=y.tid 
               WHERE x.id = " tid)
     items (query db [sql])
@@ -47,9 +47,12 @@
 
 (defn read-sub-tasks [tid]
   (let [
-    sql (str "SELECT x.id,x.title,x.due,y.owner
-              FROM tasks x left outer join descriptions y on x.cid=y.id 
-              WHERE x.pid=" tid)
+    ; sql (str "SELECT x.id,x.title,y.owner
+    ;           FROM relations z,tasks x left outer join descriptions y on x.cid=y.id
+    ;           WHERE z.tid=x.id z.pid=" tid)
+    sql (str "SELECT x.id,x.title
+              FROM tasks x, relations z 
+              WHERE x.id=z.tid and z.pid=" tid)
     ]
     (query db [sql])))
 
