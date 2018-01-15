@@ -1,20 +1,20 @@
 --ALTER TABLE tasks RENAME TO temp;  -- Rename table
 
-drop table milestones; --- Do not need when rename Table using ALTER 
+--drop table milestones; --- Do not need when rename Table using ALTER 
 
-CREATE TABLE milestones
+CREATE TABLE relations
 (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  cid INTEGER default 0,
-  --tid INTEGER default 0,
-  --type,class
+  tid INTEGER default 0,
+  pid INTEGER default 0,
+  type TEXT default "subtask"
 
   -- tasks Table
-  tid INTEGER default 0, 
-  title,
+  --tid INTEGER default 0, 
+  --title,
   -- due TIMESTAMP DEFAULT (datetime('now','localtime')),
-  type default "tr",
-  class
+  --type default "tr",
+  --class
 
   -- descriptions Table
   --tid INTEGER default 0, type, owner, content,duration default 0.5,
