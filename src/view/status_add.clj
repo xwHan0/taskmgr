@@ -6,6 +6,17 @@
     [database.core :as db]
     [view.util :as util]))
 
+(defn command-parameter [cmd id]
+  (let []
+    (cond 
+      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
+      (= cmd :EDT-TASK) {:tid id status? false :date? false :content? false :href (str "/edit_task?id=" id)}
+      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
+      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
+      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
+      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
+      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}      
+      )))
 
 (defn- owner-field [owner]
   [:div#field
