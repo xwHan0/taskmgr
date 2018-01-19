@@ -21,12 +21,16 @@
 
 (defn read-task [tid]
   (let [
-    sql (str "SELECT x.id, x.title, y.owner, y.content, y.finish 
+    sql (str "SELECT x.id, x.title, x.owner, y.content, y.finish 
               FROM tasks x left outer join descriptions y on x.id=y.tid 
               WHERE x.id = " tid)
     items (query db [sql])
     ]
     (first items)))
+
+(defn update-task [{:keys [tid title owner]}]
+  (execute! db ["UPDATE tasks SET title=?, owner=? WHERE id=?" title owner tid])
+  "Update Success!")
 
 (defn read-task-status [tid & date]
   (let [
@@ -81,12 +85,16 @@
 
 
 
-(defn add-task [{:keys [pid type due title owner start finish description] :as task}]
-  (let [tid (insert-db db :tasks {:due due :type type :title title :pid pid})]
-    (when (or owner description)
-      (let [did (insert-db db :descriptions {:tid tid :owner owner :start start :finish finish :content description})]
-        (update! db :tasks {:cid did} ["id = ?" tid])))
+(defn add-task [{:keys [pid due title owner] :as task}]
+  (let [tid (insert-db db :tasks {:title title :owner owner})]
+    (insert-db db :relations {:tid tid :pid pid :type "subtask"})
     "Add success!"))
+
+(defn delete-task [tid]
+  (let []
+    (execute! db ["DELETE FROM tasks WHERE id=?" tid])
+    (execute! db ["DELETE FROM relations WHERE tid=?" tid])
+    ))
  
 (defn add-comment [{:keys [tid owner status complete start end content] :as desc}]
   (let [did (insert-db db :descriptions desc)]

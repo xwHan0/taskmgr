@@ -4,19 +4,13 @@
     [hiccup.page :refer :all]
     [ring.util.anti-forgery :refer :all]
     [database.core :as db]
+    [util.command :as cmd]
+    [debux.core :refer :all]
     [view.util :as util]))
 
-(defn command-parameter [cmd id]
-  (let []
-    (cond 
-      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
-      (= cmd :EDT-TASK) {:tid id status? false :date? false :content? false :href (str "/edit_task?id=" id)}
-      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
-      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
-      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
-      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}
-      (= cmd :ADD-TASK) {:tid id status? false :date? false :content? false :href (str "/add_task?id=" id)}      
-      )))
+(defn- title-field [title]
+  [:div#field
+    [:span "Task Title: "] [:input#title {:type "text" :name "title" :size 80 :value title}]])
 
 (defn- owner-field [owner]
   [:div#field
@@ -32,9 +26,9 @@
     [:span "Start: "] [:input#start {:type "datetime-local" :name "start" }]
     [:span "Finish: "] [:input#finish {:type "datetime-local" :name "finish" }]])
     
-(defn page [& {:keys [tid cid status? date? href]}]
+(defn page [{:keys [tid cid status? date? owner? content? title? href cmd]}]
   (let [
-    {:keys [status owner complete content start finish]} (last (db/read-descriptions :tid tid :cid cid))
+    {:keys [title owner complete status start finish content]} (dbgn (cmd/read cmd tid))
   ]
     (util/page
       [
@@ -44,10 +38,11 @@
       ]
       ["css/taskadd.css"]
       [:form#task_cnxt {:method "post" :action href}
-        (owner-field owner)
+        (when title? (title-field title))
+        (when owner? (owner-field owner))
         (when status? (status-field complete status))
         (when date? (date-field start finish))
-        [:textarea#descriptin {:name "description"} content]
+        (when content? [:textarea#descriptin {:name "description"} content])
         [:input {:type "submit" :value "submit"}]
         (anti-forgery-field)
       ]

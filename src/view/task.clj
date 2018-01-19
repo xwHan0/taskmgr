@@ -2,6 +2,7 @@
   (:require
     [clojure.core.ex :refer :all]
     [database.core :as db]
+    [util.command :as cmd]
     [view.util :as util]))
 
 (defn- title-componment-hirechy [parent-task-vector]
@@ -40,13 +41,13 @@
     [:ul#nav
       [:li [:a {:href (str "#" tid)} "Task"]
         [:ul 
-          [:li [:a {:href (str "/add_task?id=" tid)} "Add Sub Task"]]
-          [:li [:a {:href (str "javascript:")} "Edit Task"]]
-          [:li [:a {:href (str "/add_status?id=" tid)} "Delete Task"]]]]
+          [:li (cmd/command-button :ADD-TASK tid)]
+          [:li (cmd/command-button :EDT-TASK tid)]
+          ]]
       [:li [:a {:href "#"} "Comment"]
         [:ul
-        [:li [:a {:href (str "javascript: description_layer(" tid ", '/add_comment?id=" tid "')")} "Add Comment"]]
-        [:li [:a {:href (str "javascript: description_layer(" tid ", '/add_status?id=" tid "')")} "Add Status"]]
+        [:li (cmd/command-button :ADD-COMT tid)]
+        [:li (cmd/command-button :ADD-STAT tid)]
         [:li [:a {:href (str "javascript: description_layer(" tid ", '/add_record?id=" tid "')")} "Add Record"]]
         [:li "--------------------------"]
         [:li [:a {:href (str "javascript: description_layer(0, '/add_record')")} "Add Global Record"]]
@@ -63,27 +64,28 @@
         ]]
       ]])
 
-(defn- subtask-componment [subtasks]
+(defn- subtask-componment [subtasks pid]
     "填充子任务组件。"
     [:div#task_subtask_top
         [:table {:id "task_subtask_tbl"}
         [:thead
-        [:tr [:th "No."] [:th "Title"] [:th "Owner"] [:th "Status"]]]
+        [:tr [:th "No."] [:th "Title"] [:th "Owner"] [:th "Status"] [:th "Operate"]]]
         (apply vector :tbody
             (for [{:keys [id title owner status] :or {owner "xwhan" status "Open"}} subtasks]
-                [:tr [:td id] [:td [:a {:href (str "/task?id=" id)} title]] [:td owner] [:td status]]))]])
+                [:tr [:td id] [:td [:a {:href (str "/task?id=" id)} title]] [:td owner] [:td status]
+                  [:td [:div [:a {:href (str "/delete_task?id=" id "&pid=" pid)} "Delete"]]]]))]])
       
 
 (defn- comment-componment-history
   "按照comments显示历史comment信息"
-  [{:keys [id finish content owner status complete]}]
+  [{:keys [id finish content owner status complete]} tid]
   [:div {:id "task_comment_one"}
     [:div {:id "task_comment_ctrl"} 
       [:div finish (when owner " by ") owner]  
       [:div 
         [:a {:href (str "/edit_comment?id=" id)} " Edit"] 
         " | "
-        [:a {:href (str "/delete_comment?id=" id)} "Delete"]]]
+        [:a {:href (str "/delete_comment?id=" id "&tid=" tid)} "Delete"]]]
     (when status
       [:div#task_comment_ctrl
         [:div "Status: " status " and complete: " complete "%"]])
@@ -91,20 +93,16 @@
 
 (defn- comment-componment
   "按照comments信息填充注释组件。"
-  [comments]
+  [comments tid]
   [:div {:id "task_comment_top"}
     (apply vector :div 
           {:id "task_comment_history"}
-          (map comment-componment-history comments))
-    ; [:div {:id "task_comment_new"}
-    ; [:textarea {:id "comment" :name "comment"}]
-    ; [:br]
-    ; [:input {:type "button" :id "comment" :name "comment" :value "comment"}]]
+          (map #(comment-componment-history % tid) comments))
     ])
 
 (defn page [tid]
   (let [
-    task-info (into (db/read-task-status tid) (db/read-task tid))
+    task-info (into (db/read-task tid) (db/read-task-status tid))
     sub-tasks (db/read-sub-tasks tid)
     sub-tasks-status (->> sub-tasks (map :id) (map db/read-task-status) (map :status))
     sub-tasks-info (map #(assoc %1 :status %2) sub-tasks sub-tasks-status)
@@ -127,7 +125,7 @@
         (task-commands tid)
         (attribute-componment task-info)
         (when (not-empty sub-tasks-info)
-          (subtask-componment sub-tasks-info))
-        (comment-componment (db/read-descriptions :tid tid))
+          (subtask-componment sub-tasks-info tid))
+        (comment-componment (db/read-descriptions :tid tid) tid)
       ]
       )))
