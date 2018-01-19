@@ -24,7 +24,7 @@
   (POST "/edit_task" [id title owner] (db/update-task {:tid id :title title :owner owner}))
   (GET "/delete_task" [id pid]
     (do
-      (db/delete-task (Integer/parseInt id))
+      (db/delete-task (Integer/parseInt id) pid)
       (ring.util.response/redirect (str "/task?id=" pid))))
   
   (GET "/add_status" [id] (status-add/page (cmd/command-parameter :ADD-STAT (Integer/parseInt id))))

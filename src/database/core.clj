@@ -90,10 +90,11 @@
     (insert-db db :relations {:tid tid :pid pid :type "subtask"})
     "Add success!"))
 
-(defn delete-task [tid]
+(defn delete-task [tid pid]
   (let []
     (execute! db ["DELETE FROM tasks WHERE id=?" tid])
     (execute! db ["DELETE FROM relations WHERE tid=?" tid])
+    (execute! db ["UPDATE relations SET pid=?" pid " WHERE pid=?" tid])
     ))
  
 (defn add-comment [{:keys [tid owner status complete start end content] :as desc}]
@@ -137,4 +138,5 @@
     
 (defn delete-description [id]
   (let [sql (str "DELETE FROM descriptions WHERE id=" id)]
+    (execute! db ["DELETE FROM status WHERE cid=?" id])
     (execute! db [sql])))
