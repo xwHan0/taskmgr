@@ -9,6 +9,7 @@
             [view.task :as task]
             [view.task-create :as task-create]
             [util.command :as cmd]
+            [debux.core :refer :all]
             [view.status-add :as status-add]
             [view.milestone-add :as milestone-add]
             [view.milestone :as milestone]))
@@ -30,11 +31,11 @@
   (GET "/add_status" [id] (status-add/page (cmd/command-parameter :ADD-STAT (Integer/parseInt id))))
   (POST "/add_status" [id status complete description] (db/add-status {:tid (Integer/parseInt id) :complete complete :status status :description description}))
 
-  (GET "/add_record" [id] (status-add/page :date? true :href (str "add_record?id=" id)))
+  (GET "/add_record" [id] (status-add/page (cmd/command-parameter :ADD-RECD (Integer/parseInt id))))
   (GET "/add_record" [] (status-add/page :date? true :href "add_record"))
   (POST "/add_record" [id start finish owner description]
-    (if-not (= "" id)
-      (db/add-status {:id (Integer/parseInt id) :start start :finish finish :description description :owner owner})
+    (if-not (dbgn (= "" id))
+      (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :description description :owner owner})
       (db/add-status {:start start :finish finish :description description :owner owner})))
 
   (GET "/add_comment" [id] (status-add/page (cmd/command-parameter :ADD-COMT (Integer/parseInt id))))

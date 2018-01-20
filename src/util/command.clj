@@ -15,8 +15,8 @@
             {:tid id :status? false :date? false :owner? false :content? false :title? false :href (str "/add_task?id=" id)}
         (= cmd :ADD-STAT) 
             {:tid id :status? true  :date? false :owner? false :content? true  :title? false :href (str "/add_status?id=" id) :btn "Add Status"}
-        (= cmd :ADD-TASK) 
-            {:tid id :status? false :date? false :owner? false :content? false :title? false :href (str "/add_task?id=" id)}
+        (= cmd :ADD-RECD) 
+            {:tid id :status? false :date? true  :owner? true  :content? true  :title? false :href (str "/add_record?id=" id) :btn "Add Record"}
         (= cmd :ADD-TASK) 
             {:tid id :status? false :date? false :owner? false :content? false :title? false :href (str "/add_task?id=" id)}      
         ))))

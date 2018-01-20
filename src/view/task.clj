@@ -48,7 +48,8 @@
         [:ul
         [:li (cmd/command-button :ADD-COMT tid)]
         [:li (cmd/command-button :ADD-STAT tid)]
-        [:li [:a {:href (str "javascript: description_layer(" tid ", '/add_record?id=" tid "')")} "Add Record"]]
+        [:li (cmd/command-button :ADD-RECD tid)]
+        ; [:li [:a {:href (str "javascript: description_layer(" tid ", '/add_record?id=" tid "')")} "Add Record"]]
         [:li "--------------------------"]
         [:li [:a {:href (str "javascript: description_layer(0, '/add_record')")} "Add Global Record"]]
         ]]
