@@ -28,7 +28,7 @@
     
 (defn page [{:keys [tid cid status? date? owner? content? title? href cmd]}]
   (let [
-    {:keys [title owner complete status start finish content]} (dbgn (cmd/read cmd tid))
+    {:keys [title owner complete status start finish content]} (cmd/read cmd tid)
   ]
     (util/page
       [

@@ -34,7 +34,7 @@
   (GET "/add_record" [id] (status-add/page (cmd/command-parameter :ADD-RECD (Integer/parseInt id))))
   (GET "/add_record" [] (status-add/page :date? true :href "add_record"))
   (POST "/add_record" [id start finish owner description]
-    (if-not (dbgn (= "" id))
+    (if-not (= "" id)
       (db/add-status {:tid (Integer/parseInt id) :start start :finish finish :description description :owner owner})
       (db/add-status {:start start :finish finish :description description :owner owner})))
 
