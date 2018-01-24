@@ -26,9 +26,9 @@
     [:span "Start: "] [:input#start {:type "datetime-local" :name "start" }]
     [:span "Finish: "] [:input#finish {:type "datetime-local" :name "finish" }]])
     
-(defn page [{:keys [tid cid status? date? owner? content? title? href cmd]}]
+(defn page [{:keys [tid cid status? date? owner? content? title? href cmd edit?]}]
   (let [
-    {:keys [title owner complete status start finish content]} (cmd/read cmd tid)
+    {:keys [title owner complete status start finish content]} (dbgn (cmd/read cmd tid))
   ]
     (util/page
       [
@@ -38,7 +38,7 @@
       ]
       ["css/taskadd.css"]
       [:form#task_cnxt {:method "post" :action href}
-        (when title? (title-field title))
+        (when (if edit? title title?) (title-field title))
         (when owner? (owner-field owner))
         (when status? (status-field complete status))
         (when date? (date-field start finish))

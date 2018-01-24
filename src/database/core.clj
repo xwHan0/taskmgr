@@ -1,11 +1,11 @@
 (ns database.core
   (:require 
+    [debux.core :refer :all]
     [clojure.java.jdbc :refer :all]
     [clj-time.core :as t]
     [clj-time.format :as tf]
     ))
 
-;
 (def generated-key (keyword "last_insert_rowid()"))
 (defn insert-db [db table content]
   (generated-key (first (insert! db table content))))
@@ -70,6 +70,12 @@
         [{:title title :id tid}]
         (conj (read-ancestor-tasks pid) {:title title :id tid})))))
 
+;======================================================================================================================
+; Description
+;======================================================================================================================
+(defn read-description [id]
+  (first (query db ["SELECT id,start,finish,owner,content FROM descriptions WHERE id=?" id])))
+
 (defn read-descriptions [& {:keys [tid cid]}]
   (let [
     sql (str "SELECT x.id,x.start,x.finish,x.owner,x.content,y.complete,y.status 
@@ -83,7 +89,21 @@
       {}
       (query db [sql]))))
 
-
+(defn update-description [& {:keys [id owner start finish description]}]
+  (let [sql (str "UPDATE descriptions SET "
+         "owner='" owner "',"
+         "content='" description "' "
+         (when start (str ", start=" start))
+         (when finish (str ", finish=" finish))
+         " WHERE id=" id)]
+    (dbgn sql)
+    (execute! db [sql])
+    "Update description success!"))
+    
+(defn delete-description [id]
+  (let [sql (str "DELETE FROM descriptions WHERE id=" id)]
+    (execute! db ["DELETE FROM status WHERE cid=?" id])
+    (execute! db [sql])))
 
 (defn add-task [{:keys [pid due title owner] :as task}]
   (let [tid (insert-db db :tasks {:title title :owner owner})]
@@ -126,17 +146,3 @@
           ORDER by y.finish")]
     (query db [sql])))
     
-(defn update-description [& {:keys [id owner start finish description]}]
-  (let [sql (str "UPDATE descriptions SET "
-         "owner=" owner ","
-         "content=" description " "
-         (when start (str ", start=" start))
-         (when finish (str ", finish=" finish))
-         " WHERE id=" id)]
-    (execute! db [sql])
-    "Update description success!"))
-    
-(defn delete-description [id]
-  (let [sql (str "DELETE FROM descriptions WHERE id=" id)]
-    (execute! db ["DELETE FROM status WHERE cid=?" id])
-    (execute! db [sql])))

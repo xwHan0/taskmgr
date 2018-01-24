@@ -40,7 +40,7 @@
 
   (GET "/add_comment" [id] (status-add/page (cmd/command-parameter :ADD-COMT (Integer/parseInt id))))
   (POST "/add_comment" [id owner description] (db/add-status {:tid (Integer/parseInt id) :description description :owner owner}))
-  (GET "/edit_comment" [id] (status-add/page :cid id :href (str "edit_comment?id=" id)))
+  (GET "/edit_comment" [id] (status-add/page (cmd/command-parameter :EDT-COMT (Integer/parseInt id))))
   (POST "/edit_comment" [id owner description] (db/update-description :id (Integer/parseInt id) :owner owner :description description))
   (GET "/delete_comment" [id tid]
     (do

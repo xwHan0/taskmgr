@@ -41,15 +41,14 @@
     [:ul#nav
       [:li [:a {:href (str "#" tid)} "Task"]
         [:ul 
-          [:li (cmd/command-button :ADD-TASK tid)]
-          [:li (cmd/command-button :EDT-TASK tid)]
+          [:li (cmd/command-button :ADD-TASK tid "Add Task")]
+          [:li (cmd/command-button :EDT-TASK tid "Edit Edit")]
           ]]
       [:li [:a {:href "#"} "Comment"]
         [:ul
-        [:li (cmd/command-button :ADD-COMT tid)]
-        [:li (cmd/command-button :ADD-STAT tid)]
-        [:li (cmd/command-button :ADD-RECD tid)]
-        ; [:li [:a {:href (str "javascript: description_layer(" tid ", '/add_record?id=" tid "')")} "Add Record"]]
+        [:li (cmd/command-button :ADD-COMT tid "Add Comment")]
+        [:li (cmd/command-button :ADD-STAT tid "Add Status")]
+        [:li (cmd/command-button :ADD-RECD tid "Add Record")]
         [:li "--------------------------"]
         [:li [:a {:href (str "javascript: description_layer(0, '/add_record')")} "Add Global Record"]]
         ]]
@@ -74,17 +73,21 @@
         (apply vector :tbody
             (for [{:keys [id title owner status] :or {owner "xwhan" status "Open"}} subtasks]
                 [:tr [:td id] [:td [:a {:href (str "/task?id=" id)} title]] [:td owner] [:td status]
-                  [:td [:div [:a {:href (str "/delete_task?id=" id "&pid=" pid)} "Delete"]]]]))]])
+                  [:td [:div 
+                    [:a {:href (str "/delete_task?id=" id "&pid=" pid)} "Delete"]
+                    " | "
+                    (cmd/command-button :EDT-TASK id "Edit")
+                    ]]]))]])
       
 
 (defn- comment-componment-history
   "按照comments显示历史comment信息"
-  [{:keys [id finish content owner status complete]} tid]
+  [{:keys [id start finish content owner status complete]} tid]
   [:div {:id "task_comment_one"}
     [:div {:id "task_comment_ctrl"} 
-      [:div finish (when owner " by ") owner]  
+      [:div (when start (str start " to ")) finish (when owner " by ") owner]  
       [:div 
-        [:a {:href (str "/edit_comment?id=" id)} " Edit"] 
+        (cmd/command-button :EDT-COMT id "Edit")
         " | "
         [:a {:href (str "/delete_comment?id=" id "&tid=" tid)} "Delete"]]]
     (when status
