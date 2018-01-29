@@ -39,9 +39,11 @@
       (db/add-status {:start start :finish finish :description description :owner owner})))
 
   (GET "/add_comment" [id] (status-add/page (cmd/command-parameter :ADD-COMT (Integer/parseInt id))))
-  (POST "/add_comment" [id owner description] (db/add-status {:tid (Integer/parseInt id) :description description :owner owner}))
+  (POST "/add_comment" [id owner status complete start finish description] 
+    (db/add-status {:tid (Integer/parseInt id) :description description :owner owner :status status :complete complete :start start :finish finish}))
   (GET "/edit_comment" [id] (status-add/page (cmd/command-parameter :EDT-COMT (Integer/parseInt id))))
-  (POST "/edit_comment" [id owner description] (db/update-description :id (Integer/parseInt id) :owner owner :description description))
+  (POST "/edit_comment" [id owner status complete start finish description] 
+    (db/update-description :id (Integer/parseInt id) :owner owner :owner owner :status status :complete complete :start start :finish finish :description description))
   (GET "/delete_comment" [id tid]
     (do
       (db/delete-description id)

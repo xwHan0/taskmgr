@@ -23,8 +23,8 @@
 
 (defn- date-field [start finish]
   [:div#field
-    [:span "Start: "] [:input#start {:type "datetime-local" :name "start" }]
-    [:span "Finish: "] [:input#finish {:type "datetime-local" :name "finish" }]])
+    [:span "Start: "] [:input#start {:type "datetime-local" :name "start" :value start}]
+    [:span "Finish: "] [:input#finish {:type "datetime-local" :name "finish" :value finish}]])
     
 (defn page [{:keys [tid cid status? date? owner? content? title? href cmd edit?]}]
   (let [

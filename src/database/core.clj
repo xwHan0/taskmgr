@@ -74,7 +74,11 @@
 ; Description
 ;======================================================================================================================
 (defn read-description [id]
-  (first (query db ["SELECT id,start,finish,owner,content FROM descriptions WHERE id=?" id])))
+  (let [sql (str "SELECT x.id,x.start,x.finish,x.owner,x.content,y.status,y.complete "
+                 "FROM descriptions x left outer join status y on x.id=y.cid "
+                 "WHERE x.id=" id)]
+    (first (query db [sql]))))
+
 
 (defn read-descriptions [& {:keys [tid cid]}]
   (let [
@@ -89,15 +93,22 @@
       {}
       (query db [sql]))))
 
-(defn update-description [& {:keys [id owner start finish description]}]
+(defn update-description [& {:keys [id owner start finish status complete description]}]
   (let [sql (str "UPDATE descriptions SET "
          "owner='" owner "',"
          "content='" description "' "
-         (when start (str ", start=" start))
-         (when finish (str ", finish=" finish))
+         (when-not (= "" start) (str ", start=" start))
+         (when-not (= "" finish) (str ", finish=" finish))
          " WHERE id=" id)]
-    (dbgn sql)
+    ; (dbgn sql)
     (execute! db [sql])
+    (when (or status complete)
+      (let [{:keys [id]} (first (query db ["SELECT id,cid FROM status WHERE cid=?" id]))
+            sql (str "UPDATE status SET "
+                  "status='" status "',"
+                  "complete='" complete "'"
+                  " WHERE id=" id)]
+        (execute! db [sql])))
     "Update description success!"))
     
 (defn delete-description [id]

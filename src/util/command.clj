@@ -10,9 +10,9 @@
         (= cmd :EDT-TASK) 
             {:tid id :status? false :date? false :owner? true  :content? false :title? true  :href (str "/edit_task?id=" id)}
         (= cmd :ADD-COMT) 
-            {:tid id :status? false :date? false :owner? true  :content? true  :title? false :href (str "/add_comment?id=" id)}
+            {:tid id :status? true  :date? true  :owner? true  :content? true  :title? false :href (str "/add_comment?id=" id)}
         (= cmd :EDT-COMT) 
-            {:tid id :status? false :date? false :owner? true  :content? true  :title? false :href (str "/edit_comment?id=" id)}
+            {:tid id :status? true  :date? true  :owner? true  :content? true  :title? false :href (str "/edit_comment?id=" id)}
         (= cmd :ADD-STAT) 
             {:tid id :status? true  :date? false :owner? false :content? true  :title? false :href (str "/add_status?id=" id)}
         (= cmd :ADD-RECD) 
