@@ -17,7 +17,7 @@
     sub-tasks-id (map :id sub-tasks)
     sub-tasks-status
       (for [tid sub-tasks-id]
-        (db/read-task-statuses tid))
+        (-> tid db/read-task-statuses reverse))
     task-status (map #(assoc %1 :status %2) sub-tasks sub-tasks-status)
   ]
     [:table 
