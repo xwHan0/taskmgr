@@ -44,7 +44,7 @@
 (defn read-task-statuses [tid]
   (let [
     sql (str "SELECT x.complete, x.status, y.content, y.owner, y.start, y.finish FROM status x, descriptions y WHERE x.cid = y.id and x.tid = " tid " ")
-    sql (str sql "order by y.finish ASC")
+    sql (str sql "order by y.finish DESC")
     items (query db [sql])]
     items))
 
@@ -87,18 +87,22 @@
               WHERE " 
               (if tid (str "x.tid=" tid " ")) 
               (if cid (str "x.id=" cid " ")) 
-              " ORDER by x.finish")
+              " ORDER by x.finish DESC")
   ]
     (if (and (nil? tid) (nil? cid))
       {}
       (query db [sql]))))
 
 (defn update-description [& {:keys [id owner start finish status complete description]}]
-  (let [sql (str "UPDATE descriptions SET "
+  (let [finish (if (not= finish "") finish 
+                 (tf/unparse (tf/formatter "yyyy-MM-dd") (t/to-time-zone (t/now) (t/default-time-zone))))
+        start (if (not= start "") start 
+                 (tf/unparse (tf/formatter "yyyy-MM-dd") (t/to-time-zone (t/now) (t/default-time-zone))))
+        sql (str "UPDATE descriptions SET "
          "owner='" owner "',"
          "content='" description "' "
-         (when-not (= "" start) (str ", start=" start))
-         (when-not (= "" finish) (str ", finish=" finish))
+         ", start=" start
+         "finish=" finish
          " WHERE id=" id)]
     ; (dbgn sql)
     (execute! db [sql])
@@ -136,7 +140,9 @@
 (defn add-status [{:keys [tid start finish owner complete status description] :as in}]
   (let [
     tid (cond (nil? tid) nil (zero? tid) nil :else tid)
-    finish (if finish finish 
+    finish (if (not= finish "") finish 
+      (tf/unparse (tf/formatter "yyyy-MM-dd") (t/to-time-zone (t/now) (t/default-time-zone))))
+    start (if (not= start "") start 
       (tf/unparse (tf/formatter "yyyy-MM-dd") (t/to-time-zone (t/now) (t/default-time-zone))))
     did (insert-db db :descriptions {:tid tid :start start :finish finish :owner owner :content description})
     ]

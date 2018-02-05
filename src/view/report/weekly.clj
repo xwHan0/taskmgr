@@ -41,7 +41,7 @@
     intervals (map #(t/weeks %) (reverse (range 4)))
     dates (map #(t/minus current %) intervals)
     dates (map #(tf/unparse custom-format %) dates)
-    {:keys [status content]} (db/read-task-status tid date)
+    {:keys [status content]} (db/read-task-status tid current)
     ]
     (util/page
       ;JS
