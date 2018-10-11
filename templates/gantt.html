@@ -1,0 +1,28 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{url_for('static', filename='css/basic.css')}}" />
+<link rel="stylesheet" href="{{url_for('static', filename='css/gant.css')}}" />
+<script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/index_main.js')}}"></script>
+
+</head>
+<body>
+
+<table>
+  <thead>
+    <tr>
+    {% for i in range(100) %}
+      <th><div class='date'>{{i|e}}</div></th>
+    {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+  <tfoot>
+  </tfoot>
+</table>
+
+
+</body>
+</html>

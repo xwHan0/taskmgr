@@ -101,8 +101,8 @@
         sql (str "UPDATE descriptions SET "
          "owner='" owner "',"
          "content='" description "' "
-         ", start=" start
-         "finish=" finish
+         ", start='" start "' "
+         ", finish='" finish "' "
          " WHERE id=" id)]
     ; (dbgn sql)
     (execute! db [sql])
