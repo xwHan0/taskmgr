@@ -1,5 +1,24 @@
 from datetime import *
 
+class cell():
+    def __init__(self, cols = 1, style = "unwork", content = ""):
+        self.cols = cols
+        self.style = style
+        self.content = content
+
+
+class day():
+    def __init__(self, hour_cell, hhour_cell):
+        self.hour = hour_cell
+
+        self.hhour = []
+        for cel in hhour_cell:
+            if isinstance( cel, cell ):
+                self.hhour.append( cel )
+            else:
+                self.hhour.append( cell( style = cel ) )
+
+
 day_work_sta = {
     "2018" : [
         [], #1月
@@ -23,18 +42,22 @@ day_work_sta = {
         ]
 }
 
-day_header_html = {
-    "hour" : "".join( ['<th colspan="2" class="">{0}</th>\n'.format(i) for i in range(8,21)] ),
-    "overtime" : ["unused", "unused", "unused", "used", "used", "used", "used", "used", "unused", "unused",
-        "unused", "unused", "used", "used", "used", "used", "used", "used", "used", "used",
-        "unused", "unused", "used", "used", "used", "unused"],
-    "normal" : ["unused", "unused", "unused", "used", "used", "used", "used", "used", "unused", "unused",
-        "unused", "unused", "used", "used", "used", "used", "used", "used", "used", "used",
-        "unused", "unused", "unused", "unused", "unused", "unused"],
-    "dayon" : ["used", "used", "unused", "used", "used", "used", "used", "used", "unused", "unused",
-        "unused", "unused", "used", "used", "used", "used", "used", "used", "used", "used",
-        "unused", "unused", "unused", "unused", "unused", "unused"]
+DAY_HOUR_STA = {
+    "unwork" : day( [cell(2)], [cell(), cell()] ),
+    "overtime" : day( [cell(2, "", i) for i in range(8, 21)], 
+        ["unwork", "unwork", "unwork", "used", "used", "used", "used", "used", "unwork", "unwork",
+        "unwork", "unwork", "used", "used", "used", "used", "used", "used", "used", "used",
+        "unused", "unused", "used", "used", "used", "unwork"] ),
+    "normal" : day( [cell(2, "", i) for i in range(8, 21)],
+         ["unwork", "unwork", "unwork", "used", "used", "used", "used", "used", "unwork", "unwork",
+        "unwork", "unwork", "used", "used", "used", "used", "used", "used", "used", "used",
+        "unwork", "unwork", "unwork", "unwork", "unwork", "unwork"]),
+    "dayon" : day( [cell(2, "", i) for i in range(8, 21)],
+         ["used", "used", "unwork", "used", "used", "used", "used", "used", "unwork", "unwork",
+        "unwork", "unwork", "used", "used", "used", "used", "used", "used", "used", "used",
+        "unwork", "unwork", "unwork", "unwork", "unwork", "unwork"]),
 }
+
 
 class gantt():
 
@@ -55,15 +78,41 @@ class gantt():
 
             self.day_header_hour.append( {"day":day.day, "style":work_sta} )
 
-            if work_sta == "unwork":
-                self.day_header_day_html += '<th class="{0}">{1}</th>\n'.format(work_sta, day.day)
-                self.day_header_hour_html += '<th class="unwork"></th>\n'
-                self.day_header_hhour_html += '<th class="unwork"></th>\n'
-            else:
-                self.day_header_day_html += '<th class="{0}" colspan="26">{1}</th>\n'.format(work_sta, day.day)
-                self.day_header_hour_html += day_header_html['hour']
-                for style in day_header_html[work_sta]:
-                    self.day_header_hhour_html += '<th class="{0}"></th>\n'.format(style)
+            day_style = DAY_HOUR_STA[work_sta]
+
+            # 天表头
+            self.day_header_day_html += '<th class="{0}" colspan="{1}">{2}</th>\n'.format(work_sta, len(day_style.hhour), day.day)
+
+            # 小时表头
+            l = [' <th class="{0}" colspan="{1}">{2}</th>\n'.format(h.style, h.cols, h.content) for h in day_style.hour]
+            self.day_header_hour_html += "".join( l )
+
+            # 半小时表头
+            l = [' <th class="{0}" colspan="{1}">{2}</th>\n'.format(h.style, h.cols, h.content) for h in day_style.hhour]
+            self.day_header_hhour_html += "".join( l )
+
             day = day + day1
+
+    def hour_header(self, from_date, to_date, ishour = True):
+
+        rst = ""
+        day1 = timedelta(days = 1)
+        day = from_date
+
+        while day <= to_date:
+
+            work_sta = day_work_sta[str(day.year)][day.month-1][day.day-1]
+            day_style = DAY_HOUR_STA[work_sta]
+            
+            if ishour:
+                rst += "".join( [' <th class="{0}" colspan="{1}">{2}</th>\n'.format(h.style, h.cols, h.content) for h in day_style.hour] )
+            else:
+                rst += "".join( [' <th class="{0}" colspan="{1}">{2}</th>\n'.format(h.style, h.cols, h.content) for h in day_style.hhour] )
+
+            # 递增日期
+            day = day + day1
+
+        return rst
+
 
 gnt = gantt()       
