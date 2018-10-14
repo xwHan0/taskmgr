@@ -1,6 +1,5 @@
 
 .date {
-  width: 1rem;
 }
 
 table {
@@ -10,4 +9,9 @@ table {
 
 table th{
   border:solid #000 1px;
+  width: 1rem;
+}
+
+.unused {
+  background: #888888;
 }

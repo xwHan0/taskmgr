@@ -12,8 +12,18 @@
 <table>
   <thead>
     <tr>
-    {% for i in range(100) %}
-      <th><div class='date'>{{i|e}}</div></th>
+    {% for i in range(6) %}
+      <th colspan="{{gantt.day_col_num}}">{{i|e}}</th>
+    {% endfor %}
+    </tr>
+    <tr>
+    {% for i in range(6) %}
+      {{gantt.day_header_hour_html|safe}}
+    {% endfor %}
+    </tr>
+    <tr>
+    {% for i in range(6) %}
+      {{gantt.day_header_hhour_html|safe}}
     {% endfor %}
     </tr>
   </thead>
