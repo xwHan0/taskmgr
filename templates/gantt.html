@@ -12,22 +12,24 @@
 <table>
   <thead>
     <tr>
-    {% for i in range(6) %}
-      <th colspan="{{gantt.day_col_num}}">{{i|e}}</th>
-    {% endfor %}
+      <th>day</th>
+      {{gantt.day_header_day_html|safe}}
     </tr>
     <tr>
-    {% for i in range(6) %}
+      <th>hour</th>
       {{gantt.day_header_hour_html|safe}}
-    {% endfor %}
     </tr>
     <tr>
-    {% for i in range(6) %}
+      <th>hhour</th>
       {{gantt.day_header_hhour_html|safe}}
-    {% endfor %}
     </tr>
   </thead>
   <tbody>
+    <tr>
+      {% for i in range(200) %}
+        <td><img src='{{url_for("static", filename="svg/progress_work_65.svg")}}' /></td>
+      {% endfor %}
+    </tr>
   </tbody>
   <tfoot>
   </tfoot>

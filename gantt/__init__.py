@@ -24,7 +24,7 @@ day_work_sta = {
 }
 
 day_header_html = {
-    "hour" : "".join( ['<th colspan="2" class="">{0}</th>'.format(i) for i in range(8,21)] ),
+    "hour" : "".join( ['<th colspan="2" class="">{0}</th>\n'.format(i) for i in range(8,21)] ),
     "overtime" : ["unused", "unused", "unused", "used", "used", "used", "used", "used", "unused", "unused",
         "unused", "unused", "used", "used", "used", "used", "used", "used", "used", "used",
         "unused", "unused", "used", "used", "used", "unused"],
@@ -40,20 +40,30 @@ class gantt():
 
     def __init__(self, t=None):
 
+        self.day_header_hour = []
+        self.day_header_day_html = ""
+        self.day_header_hour_html = ""
+        self.day_header_hhour_html = ""
+
         t = t if t else datetime.today()    # 获取日期
         day_ofst = timedelta(days = 7 + t.weekday())    # 计算上一个星期一距给定日期t的天数差
         day = t - day_ofst   # 计算上一个星期一的日期
 
         day1 = timedelta(days = 1)
         for i in range(21):
-            work_sta = day_work_sta[str(day.year][day.month-1][day.day-1]
+            work_sta = day_work_sta[str(day.year)][day.month-1][day.day-1]
+
+            self.day_header_hour.append( {"day":day.day, "style":work_sta} )
+
             if work_sta == "unwork":
-                self.day_header_hour_html += '<th class="unwork">{0}</th>'.format(day.day)
-                self.day_header_hhour_html += '<th class="unwork"></th>'
+                self.day_header_day_html += '<th class="{0}">{1}</th>\n'.format(work_sta, day.day)
+                self.day_header_hour_html += '<th class="unwork"></th>\n'
+                self.day_header_hhour_html += '<th class="unwork"></th>\n'
             else:
+                self.day_header_day_html += '<th class="{0}" colspan="26">{1}</th>\n'.format(work_sta, day.day)
                 self.day_header_hour_html += day_header_html['hour']
                 for style in day_header_html[work_sta]:
-                    self.day_header_hhour_html += '<th class="{0}"></th>'.format(style)
+                    self.day_header_hhour_html += '<th class="{0}"></th>\n'.format(style)
             day = day + day1
 
-        
+gnt = gantt()       

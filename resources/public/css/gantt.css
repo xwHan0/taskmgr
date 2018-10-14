@@ -1,6 +1,4 @@
 
-.date {
-}
 
 table {
   border-collapse:collapse;
@@ -9,9 +7,18 @@ table {
 
 table th{
   border:solid #000 1px;
-  width: 1rem;
+  width: 10;
+  padding: 0px;
+}
+
+table td{
+  padding: 0px;
 }
 
 .unused {
+  background: #888888;
+}
+
+.unwork {
   background: #888888;
 }
