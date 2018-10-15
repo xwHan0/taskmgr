@@ -1,4 +1,9 @@
 
+div#task_gantt {
+  dispaly: flex;
+  flex-flow: row nowrap;
+}
+
 div#task {
   width: 20%;
   overflow-x: scroll;
