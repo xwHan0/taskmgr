@@ -1,4 +1,13 @@
 
+div#task {
+  width: 20%;
+  overflow-x: scroll;
+}
+
+div#gantt {
+  width: 80%;
+  overflow: scroll;
+}
 
 table {
   border-collapse:collapse;
