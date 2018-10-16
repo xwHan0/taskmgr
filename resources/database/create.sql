@@ -11,8 +11,7 @@ CREATE TABLE information
   description TEXT default "",
   start TIMESTAMP DEFAULT (datetime('now','localtime')),
   finish TIMESTAMP DEFAULT (datetime('now','localtime')),
-  hhourst INTEGER default 0,
-  hhoured INTEGER default 0
+  status TEXT default "collect"
 );
 
 --INSERT INTO descriptions(id,tid,type,owner,content,duration,date) select id,tid,type,owner,content,duration,date from temp;
