@@ -1,6 +1,10 @@
+div#control {
+  margin: 5px;
+  padding: 5px;
+}
 
 div#task_gantt {
-  dispaly: flex;
+  display: flex;
   flex-flow: row nowrap;
 }
 
