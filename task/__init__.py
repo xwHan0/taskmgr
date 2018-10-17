@@ -71,6 +71,8 @@ class Task:
         return "plan{0}".format(i+1)
         
     def info_status(self, hhour, idx):
+        if idx >= len(self.info): return (None, False)
+        
         info = self.info[idx]
         if hhour == info.finish: return (info, True)
         elif hhour >= info.start and hhour <= info.finish: return (info, False)
@@ -88,13 +90,17 @@ class Task:
         day = start
         day1 = timedelta(days=1)
         info_idx = 0
+        plan_status = "plan0"
         while day <= finish:
-            day_sta = DAY_WORK_STA[str(day.year)]
-            if day_sta == "unwork":
+            day_sta = DAY_WORK_STA[str(day.year)][day.month-1][day.day-1]
+            if day_sta == "unwork" and plan_status == "plan0":
                 rst += '<td class="unwork"></td><td class="unwork"></td>'
+            elif day_sta == "unwork":
+                img = '<img src="{{url_for(\"static\", filename=\"svg/progress_{0}_{1}.svg\")}}"/>'.format(plan_status, 0)
+                rst += '<td class="unwork">{0}</td><td class="unwork">{0}</td>'.format(img)
             else:
                 for hhour, hhour_st in enumerate(DAY_HOUR_STA[day_sta].hhour):
-                    hhour = self.hhour_datetime(hhour)
+                    hhour = self.hhour_datetime(hhour, day)
                     plan_status = self.plan_status(hhour)
                     info, nxt = self.info_status(hhour, info_idx)
                     if nxt: info_idx += 1
@@ -105,7 +111,7 @@ class Task:
                     else:
                         img = '<img src="{{url_for(\"static\", filename=\"svg/progress_{0}_{1}.svg\")}}"/>'.format(plan_status, complete)
                     
-                    rst += '<td class="{0}">{1}</td>'.format(hhour_st, img)
+                    rst += '<td class="{0}">{1}</td>'.format(hhour_st.style, img)
                     
             day += day1
             
