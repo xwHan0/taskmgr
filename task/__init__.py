@@ -91,27 +91,28 @@ class Task:
         day1 = timedelta(days=1)
         info_idx = 0
         plan_status = "plan0"
+        td = '<td class="{0}"><img src="{{url_for(\"static\", filename=\"svg/progress_{1}_{2}.svg\")}}"/></td>\n'
+                    
         while day <= finish:
             day_sta = DAY_WORK_STA[str(day.year)][day.month-1][day.day-1]
-            if day_sta == "unwork" and plan_status == "plan0":
-                rst += '<td class="unwork"></td><td class="unwork"></td>'
-            elif day_sta == "unwork":
-                img = '<img src="{{url_for(\"static\", filename=\"svg/progress_{0}_{1}.svg\")}}"/>'.format(plan_status, 0)
-                rst += '<td class="unwork">{0}</td><td class="unwork">{0}</td>'.format(img)
-            else:
-                for hhour, hhour_st in enumerate(DAY_HOUR_STA[day_sta].hhour):
-                    hhour = self.hhour_datetime(hhour, day)
-                    plan_status = self.plan_status(hhour)
-                    info, nxt = self.info_status(hhour, info_idx)
-                    if nxt: info_idx += 1
-                    if plan_status == "plan0" and info == None:
-                        img = ""
-                    elif info == None: 
-                        img = '<img src="{{url_for(\"static\", filename=\"svg/progress_{0}_{1}.svg\")}}"/>'.format(plan_status, 0)
-                    else:
-                        img = '<img src="{{url_for(\"static\", filename=\"svg/progress_{0}_{1}.svg\")}}"/>'.format(plan_status, complete)
-                    
-                    rst += '<td class="{0}">{1}</td>'.format(hhour_st.style, img)
+            
+            if day_sta == "unwork":
+                rst += td.format(day_work, plan_status, 0)
+                continue
+            
+            for hhour, hhour_st in enumerate(DAY_HOUR_STA[day_sta].hhour):
+                if hhour_st.style == "unwork":
+                    rst += td.format("unwork", plan_status, 0)
+                    continue
+                hhour = self.hhour_datetime(hhour, day)
+                plan_status = self.plan_status(hhour)
+                info, nxt = self.info_status(hhour, info_idx)
+                if nxt: info_idx += 1
+        
+                if info == None: 
+                    rst += td.format(hhour_st.style, plan_status, 0)
+                else:
+                    rst += td.format(hhour_st.style, plan_status, complete)
                     
             day += day1
             

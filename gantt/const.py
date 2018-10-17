@@ -46,7 +46,7 @@ DAY_HOUR_STA = {
     "overtime" : day( [cell(2, "", i) for i in range(8, 21)], 
         ["unwork", "unwork", "unwork", "used", "used", "used", "used", "used", "unwork", "unwork",
         "unwork", "unwork", "used", "used", "used", "used", "used", "used", "used", "used",
-        "unused", "unused", "used", "used", "used", "unwork"] ),
+        "unwork", "unwork", "used", "used", "used", "unwork"] ),
     "normal" : day( [cell(2, "", i) for i in range(8, 21)],
          ["unwork", "unwork", "unwork", "used", "used", "used", "used", "used", "unwork", "unwork",
         "unwork", "unwork", "used", "used", "used", "used", "used", "used", "used", "used",
