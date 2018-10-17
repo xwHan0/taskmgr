@@ -16,7 +16,7 @@ class Information:
         self.type = type
         self.owner = owner
         self.description = description
-        self.start = datetim_union( start )
+        self.start = datetime_union( start )
         self.finish = datetime_union( finish )
         self.status = status
         self.complete = complete
@@ -40,7 +40,7 @@ class Task:
         c.close()
         
     def read_information(self, typ):
-        conn = sqlite3.connect('../resources/database/tmgr.sqlite', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
+        conn = sqlite3.connect('resources/database/tmgr.sqlite', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
         conn.row_factory = sqlite3.Row
         c = conn.execute('SELECT * FROM information WHERE tid=? AND type=? ORDER BY finish ASC', (self.tid, typ))
         #rst = c.fetchall()
@@ -82,6 +82,12 @@ class Task:
     def html_task(self):
         return '<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td>'.format(self.name, self.owner, self.start, self.finish)
 
+    def html_td(self, hhour_status, plan_status, complete):
+        if plan_status == "plan0":
+            return '<td class="{0}"></td>'.format(hhour_status)
+        else
+            return """<td class="{0}"><img src="resources/svg/progress_{1}_{2}.svg"/></td>\n""".format(hhour_status, plan_status, complete)
+        
     def html_hhour(self, start, finish):
         rst = ""
         
@@ -92,18 +98,18 @@ class Task:
         day1 = timedelta(days=1)
         info_idx = 0
         plan_status = "plan0"
-        td = '<td class="{0}"><img src="{{url_for(\"static\", filename=\"svg/progress_{1}_{2}.svg\")}}"/></td>\n'
                     
         while day <= finish:
             day_sta = DAY_WORK_STA[str(day.year)][day.month-1][day.day-1]
             
             if day_sta == "unwork":
-                rst += td.format(day_work, plan_status, 0)
+                rst += self.html_td(day_sta, plan_status, 0)*2
+                day += day1
                 continue
             
             for hhour, hhour_st in enumerate(DAY_HOUR_STA[day_sta].hhour):
                 if hhour_st.style == "unwork":
-                    rst += td.format("unwork", plan_status, 0)
+                    rst += self.html_td("unwork", plan_status, 0)
                     continue
                 hhour = self.hhour_datetime(hhour, day)
                 plan_status = self.plan_status(hhour)
@@ -111,9 +117,9 @@ class Task:
                 if nxt: info_idx += 1
         
                 if info == None: 
-                    rst += td.format(hhour_st.style, plan_status, 0)
+                    rst += self.html_td(hhour_st.style, plan_status, 0)
                 else:
-                    rst += td.format(hhour_st.style, plan_status, complete)
+                    rst += self.html_td(hhour_st.style, plan_status, complete)
                     
             day += day1
             
