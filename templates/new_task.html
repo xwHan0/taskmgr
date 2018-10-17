@@ -1,0 +1,21 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{url_for('static', filename='css/basic.css')}}" />
+<script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
+
+
+</head>
+<body>
+
+<div>
+    <form method="post" action="/add_task">
+        <span>Task Title:</span>
+        <input type="text" name="title" size="80" />
+        <br/>
+        <input type="submit" value="Create" />
+    </form>
+</div>
+
+</body>
+</html>

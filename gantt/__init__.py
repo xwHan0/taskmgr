@@ -91,7 +91,7 @@ class gantt():
             self.day_header_hour_html += "".join( l )
 
             # 半小时表头
-            l = [' <th class="{0}" colspan="{1}">{2}</th>\n'.format(h.style, h.cols, h.content) for h in day_style.hhour]
+            l = [' <th class="{0}" colspan="{1}">{2}</th>\n'.format(h.style, h.cols, "&nbsp;") for h in day_style.hhour]
             self.day_header_hhour_html += "".join( l )
 
             day = day + day1
@@ -118,4 +118,4 @@ class gantt():
         return rst
 
 
-gnt = gantt()       
+# gnt = gantt()       

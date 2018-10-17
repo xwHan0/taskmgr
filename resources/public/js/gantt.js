@@ -13,17 +13,22 @@ $(document).ready(function(){
 		           shadeClose: true,
 		           shade: 0.5,
 		           area: ['600px', '60%'],
-		           content: href,
+		           content: '/new_task.html',
 		           btn: ["Close", "Pop"],
 		           yes: function(index,layero){
 			              parent.location.reload(); 
 			              layer.close(index);
-		           },
-		           btn2: function(index,layero){
-		               window.open(href);
-		               layer.close(index);
 		           }
+		        //    btn2: function(index,layero){
+		        //        window.open(href);
+		        //        layer.close(index);
+		        //    }
 		       }); 
-    })
+	})
+	
+	$("img[id^='info']").on("click", function(){
+		id = $(this).attr("id")
+		alert(id)
+	})
     
 })
