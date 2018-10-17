@@ -40,7 +40,7 @@
   <tbody>
   {% for tsk in tasks %}
     <tr>
-      {{tsk}}
+      {{tsk|safe}}
     </tr>
   {% endfor %}
   </tbody>

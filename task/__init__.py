@@ -58,18 +58,20 @@ class Task:
         """"""
         hhour += 16
         if hhour % 2 == 1:
-            return day.replace(hour=hhour//2, minute=30, second=0)
+            return day.replace(hour=hhour//2, minute=30, second=0, microsecond=0)
         else:
-            return day.replace(hour=hhour//2, minute=0, second=0)
+            return day.replace(hour=hhour//2, minute=0, second=0,microsecond=0)
      
     def plan_status(self, hhour):
         """"""
         if self.plan == []: return "plan0"
         if hhour < self.plan[0].start: return "plan0"
+        if hhour > self.plan[-1].finish: return "plan-1"
         for i,v in enumerate(self.plan):
             if hhour < v.finish:
-                break
-        return "plan{0}".format(i+1)
+                return "plan{0}".format(i+1)
+        
+        return "plan{0}".format(-1)
         
     def info_status(self, hhour, idx):
         if idx >= len(self.info): return (None, False)
@@ -83,9 +85,9 @@ class Task:
         return '<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td>'.format(self.name, self.owner, self.start, self.finish)
 
     def html_td(self, hhour_status, plan_status, complete):
-        if plan_status == "plan0":
-            return '<td class="{0}"></td>'.format(hhour_status)
-        else
+        if plan_status == "plan0" and complete == 0:
+            return '<td class="{0}"></td>\n'.format(hhour_status)
+        else:
             return """<td class="{0}"><img src="resources/svg/progress_{1}_{2}.svg"/></td>\n""".format(hhour_status, plan_status, complete)
         
     def html_hhour(self, start, finish):
@@ -113,13 +115,16 @@ class Task:
                     continue
                 hhour = self.hhour_datetime(hhour, day)
                 plan_status = self.plan_status(hhour)
+                if plan_status == -1:
+                    rst += '<td class="{0}"></td>'.format(hhour_st.style)
+                    continue
                 info, nxt = self.info_status(hhour, info_idx)
                 if nxt: info_idx += 1
         
                 if info == None: 
                     rst += self.html_td(hhour_st.style, plan_status, 0)
                 else:
-                    rst += self.html_td(hhour_st.style, plan_status, complete)
+                    rst += self.html_td(hhour_st.style, plan_status, info.complete)
                     
             day += day1
             
