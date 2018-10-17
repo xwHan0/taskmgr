@@ -1,5 +1,5 @@
 import sqlite3
-
+from datetime import *
 from gantt.const import *
 
 
@@ -16,45 +16,54 @@ class task():
     
     def read_detail(self):
         conn = sqlite3.connect('../resources/database/tmgr.sqlite')
+        conn.row_factory = sqlite3.Row
         c = conn.execute('SELECT * FROM information WHERE tid=?', (self.tid,))
         self.info = c.fetchall()
         c.close()
         
-    def read_information(self):
-        conn = sqlite3.connect('../resources/database/tmgr.sqlite')
-        c = conn.execute('SELECT * FROM information WHERE tid=?', (self.tid,))
-        self.info = c.fetchall()
+    def read_information(self, type):
+        conn = sqlite3.connect('../resources/database/tmgr.sqlite', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
+        conn.row_factory = sqlite3.Row
+        c = conn.execute('SELECT * FROM information WHERE tid=? AND type=? ORDER BY finish ASC', (self.tid, type))
+        rst = c.fetchall()
         c.close()
+        return rst
         
-    def detail(self, owner, description, start, finish):
-        self.owner owner
-        self.description = desription
-        self.start = start
-        self.finish = finish
+    def read_plan(self):
+        self.plan = self.read_information("plan")
         
-    def in_info(self, day, hhour, st, ed):
-    
+    def read_info(self):
+        self.info = self.read_information("info")
+        
+    def hhour_datetime(self, hhour, day):
+        """"""
         hhour += 16
         if hhour % 2 == 1:
-            hhour = day.replace(hour=hhour//2, minute=30, second=0)
+            return day.replace(hour=hhour//2, minute=30, second=0)
         else:
-            hhour = day.replace(hour=hhour//2, minute=0, second=0)
-    
-        if st.minute < 30:
-            st = st.replace(minute=0, second=0)
+            return day.replace(hour=hhour//2, minute=0, second=0)
+     
+    def datetime_union(self, d):
+        """"""
+        if d.minute < 30:
+            return d.replace(minute=0, second=0)
         else:
-            st = st.replace(minute=30, second=0)
-            
-        if ed.minute <= 30:
-            ed = ed.replace(minute=30, second=59)
-            last = ed.replace(minute=0)
-        else:
-            ed = ed.replace(minute=59, second=59)
-            last = ed.replace(minute=30)
-            
-        if hhour == last: return 2
-        elif hhour >= st and hhour <= ed: return 1
-        else: return 0
+            return d.replace(minute=30, second=0)
+     
+    def plan_status(self, hhour):
+        """"""
+        if self.plan == []: return "plan0"
+        if hhour < self.plan[0].start: return "plan0"
+        for i,v in enumerate(self.plan):
+            if hhour < v.finish:
+                break
+        return "plan{0}".format(i+1)
+        
+    def info_status(self, hhour, idx):
+        info = self.info[idx]
+        if hhour == info.finish: return (info, True)
+        elif hhour >= info.start and hhour <= info.finish: return (info, False)
+        else: return (None, False)
         
     def html_task(self):
         return '<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td>'.format(self.name, self.owner, self.start, self.finish)
@@ -62,11 +71,11 @@ class task():
     def html_hhour(self, start, finish):
         rst = ""
         
-        start = start.replace(hour=0, minute=0, second=0)
-        finish = finish.replace(hour=23, minute=59, second=59)
-        status = "START" if self.start < start else "IDLE"
-        
+        start = self.datetime_union(start)
+        finish = self.datetime_union(finish)
+         
         day = start
+        day1 = timedelta(days=1)
         info_idx = 0
         while day <= finish:
             day_sta = DAY_WORK_STA[day.year]
@@ -74,8 +83,21 @@ class task():
                 rst += '<td class="unwork"></td><td class="unwork"></td>'
             else:
                 for hhour, hhour_st in enumerate(DAY_HOUR_STA[day_sta].hhour):
-                    if hhour_st == "unwork":
-                        rst += '<td class="unwork"></td>'
+                    hhour = self.hhour_datetime(hhour)
+                    plan_status = self.plan_status(hhour)
+                    info, nxt = self.info_status(hhour, info_idx)
+                    if nxt: info_idx += 1
+                    if plan_status == "plan0" and info == None:
+                        img = ""
+                    elif info == None: 
+                        img = '<img src="{{url_for(\"static\", filename=\"svg/progress_{0}_{1}.svg\")}}"/>'.format(plan_status, 0)
                     else:
-        
+                        img = '<img src="{{url_for(\"static\", filename=\"svg/progress_{0}_{1}.svg\")}}"/>'.format(plan_status, complete)
+                    
+                    rst += '<td class="{0}">{1}</td>'.format(hhour_st, img)
+                    
+                    
+            day += day1
+            
+        return rst
         
