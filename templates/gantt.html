@@ -12,7 +12,10 @@
 <body>
 
 <div id="control">
-  <button id="newtask" title="">NEW</button>
+  <form method="post" action="/add_task">
+    <input type="text" name="title" size="40" />
+    <input type="submit" value="NEW" />
+  </form>
 </div>
 
 <hr/>

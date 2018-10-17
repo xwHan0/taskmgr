@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request
 from gantt import gantt
 from task import Task
 
@@ -22,9 +22,10 @@ def index():
     html = tsk.html_hhour(gat.start, gat.finish)
     return render_template('gantt.html', gantt = gat, tasks=[html])
 
-@app.route('/add_task')
+@app.route('/add_task', methods=['POST'])
 def add_task():
-    return render_template('new_task.html')
+    if request.method == 'POST':
+        return request.form['title']
 
 if __name__ == '__main__':
     app.run(debug=True)
