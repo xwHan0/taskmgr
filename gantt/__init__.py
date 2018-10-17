@@ -72,6 +72,9 @@ class gantt():
         day_ofst = timedelta(days = 7 + t.weekday())    # 计算上一个星期一距给定日期t的天数差
         day = t - day_ofst   # 计算上一个星期一的日期
 
+        self.start = day
+        self.finish = (day+timedelta(days=21)).replace(hour=23, minute=59)
+
         day1 = timedelta(days = 1)
         for i in range(21):
             work_sta = day_work_sta[str(day.year)][day.month-1][day.day-1]

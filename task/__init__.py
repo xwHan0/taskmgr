@@ -2,14 +2,22 @@ import sqlite3
 from datetime import *
 from gantt.const import *
 
+def datetime_union(d):
+    """"""
+    if d.minute < 30:
+        return d.replace(minute=0, second=0)
+    else:
+        return d.replace(minute=30, second=0)
+
+
 class Information:
     def __init__(self, id = 1, type = "info", owner = "hanxinwei", description = "", start = None, finish = None, status = "open", complete = 0):
         self.id = id
         self.type = type
         self.owner = owner
         self.description = description
-        self.start = start
-        self.finish = finish
+        self.start = datetim_union( start )
+        self.finish = datetime_union( finish )
         self.status = status
         self.complete = complete
 
@@ -54,13 +62,6 @@ class Task:
         else:
             return day.replace(hour=hhour//2, minute=0, second=0)
      
-    def datetime_union(self, d):
-        """"""
-        if d.minute < 30:
-            return d.replace(minute=0, second=0)
-        else:
-            return d.replace(minute=30, second=0)
-     
     def plan_status(self, hhour):
         """"""
         if self.plan == []: return "plan0"
@@ -84,8 +85,8 @@ class Task:
     def html_hhour(self, start, finish):
         rst = ""
         
-        start = self.datetime_union(start)
-        finish = self.datetime_union(finish)
+        start = datetime_union(start)
+        finish = datetime_union(finish)
          
         day = start
         day1 = timedelta(days=1)

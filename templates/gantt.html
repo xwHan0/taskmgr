@@ -38,11 +38,11 @@
     </tr>
   </thead>
   <tbody>
+  {% for tsk in tasks %}
     <tr>
-      {% for i in range(200) %}
-        <td><img src='{{url_for("static", filename="svg/progress_work_65.svg")}}' wmode='transparent' /></td>
-      {% endfor %}
+      {{tsk}}
     </tr>
+  {% endfor %}
   </tbody>
   <tfoot>
   </tfoot>
