@@ -2,16 +2,26 @@ import sqlite3
 from datetime import *
 from gantt.const import *
 
+class Information:
+    def __init__(self, id = 1, type = "info", owner = "hanxinwei", description = "", start = None, finish = None, status = "open", complete = 0):
+        self.id = id
+        self.type = type
+        self.owner = owner
+        self.description = description
+        self.start = start
+        self.finish = finish
+        self.status = status
+        self.complete = complete
 
-class task():
+
+class Task:
 
     def __init__(self, name, owner = None, description = None, start = None, finish = None):
         self.name = name
-        self.owner owner
-        self.description = desription
         self.start = start
         self.finish = finish
         self.info = []
+        self.plan = []
         self.tid = -1
     
     def read_detail(self):
@@ -21,11 +31,12 @@ class task():
         self.info = c.fetchall()
         c.close()
         
-    def read_information(self, type):
+    def read_information(self, typ):
         conn = sqlite3.connect('../resources/database/tmgr.sqlite', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
         conn.row_factory = sqlite3.Row
-        c = conn.execute('SELECT * FROM information WHERE tid=? AND type=? ORDER BY finish ASC', (self.tid, type))
-        rst = c.fetchall()
+        c = conn.execute('SELECT * FROM information WHERE tid=? AND type=? ORDER BY finish ASC', (self.tid, typ))
+        #rst = c.fetchall()
+        rst = [Information(id=info["id"], type=info["type"], owner=info["owner"], description=info["description"], start=info["start"], finish=info["finish"], status=info["status"], complete=info["complete"]) for info in c]
         c.close()
         return rst
         
@@ -78,7 +89,7 @@ class task():
         day1 = timedelta(days=1)
         info_idx = 0
         while day <= finish:
-            day_sta = DAY_WORK_STA[day.year]
+            day_sta = DAY_WORK_STA[str(day.year)]
             if day_sta == "unwork":
                 rst += '<td class="unwork"></td><td class="unwork"></td>'
             else:
@@ -96,8 +107,8 @@ class task():
                     
                     rst += '<td class="{0}">{1}</td>'.format(hhour_st, img)
                     
-                    
             day += day1
             
         return rst
+        
         
