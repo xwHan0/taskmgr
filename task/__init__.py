@@ -32,6 +32,11 @@ class Task:
         self.info = []
         self.plan = []
         self.tid = -1
+        
+    def add_task(title, tid = 0):
+        conn = sqlite3.connect('resources/database/tmgr.sqlite', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
+        c = conn.execute('INSERT INTO task(tid, title) VALUES (?,?)', (tip, title))
+        c.close()
     
     def read_detail(self):
         conn = sqlite3.connect('../resources/database/tmgr.sqlite')

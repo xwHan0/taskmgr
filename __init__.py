@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, redirect
 from gantt import gantt
 from task import Task
 
@@ -25,7 +25,8 @@ def index():
 @app.route('/add_task', methods=['POST'])
 def add_task():
     if request.method == 'POST':
-        return request.form['title']
+        Task.add_task(request.form['title'])
+        return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
