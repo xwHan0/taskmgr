@@ -26,9 +26,5 @@ $(document).ready(function(){
 		       }); 
 	})
 	
-	$("img[id^='info']").on("click", function(){
-		id = $(this).attr("id")
-		alert(id)
-	})
     
 })
