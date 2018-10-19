@@ -36,6 +36,22 @@ table td{
   padding: 0px;
 }
 
+/*task表设置*/
+
+div#task table {
+  width : 100%;
+}
+
+div#task tbody {
+  border: solid #000000 1px;
+}
+  
+div#task td.field {
+  border: solid #000000 1px;
+}
+  
+  
+
 .unwork {
   background: #EEEEEE;
 }

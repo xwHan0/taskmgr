@@ -6,9 +6,9 @@ SVG_WIDTH = 20
 SVG_HEIGHT = 30
 
 SVG_HEADER = [
-    '<?xml version="1.0" encoding="utf-8"?>',
+    '<?xml version="1.0" encoding="utf-8"?>\n',
     '<svg version="1.1" id="progress" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ',
-    '    width="{0}" height="{1}">'.format( SVG_WIDTH, SVG_HEIGHT ),
+    '    width="{0}" height="{1}">\n'.format( SVG_WIDTH, SVG_HEIGHT ),
 
 ]
     
@@ -23,7 +23,7 @@ for fg in flag:
         f = open(name, 'w')
         
         box_size = SVG_WIDTH // 2
-        x_vectical = box_size + box_size // 2
+        x_vertical = box_size + box_size // 2
         y_vectical_st = SVG_HEIGHT - box_size
         y_vectical_ed = SVG_HEIGHT
         
@@ -41,7 +41,7 @@ for fg in flag:
         f.close()
 
 
-other = ['vectical', 'leaf']
+other = ['vectial', 'leaf']
 
 for file in other:
     name = "{0}flag_{1}.svg".format(SVG_ROOT, file)
@@ -49,7 +49,7 @@ for file in other:
     
     f.writelines(SVG_HEADER)
 
-    if file == "vectical":
+    if file == "vectial":
         content = [
             '<line x1="{0}" y1="0" x2="{0}" y2="{1}" stroke="black" stroke-dasharray="4,1" />\n'.format( box_size+box_size//2, SVG_HEIGHT ),
         ]
