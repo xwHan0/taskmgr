@@ -2,6 +2,13 @@ import sqlite3
 from datetime import *
 from gantt.const import *
 
+def addTask(title, pid = 0):
+    conn = sqlite3.connect('resources/database/tmgr.sqlite')
+    c = conn.cursor()
+    c.execute('INSERT INTO task (pid, title) VALUES (?,?)', (pid, title))
+    conn.commit()
+    conn.close()
+
 def datetime_union(d):
     """归一化时间到'半小时'的起始位置。"""
     if d.minute < 30:
@@ -24,32 +31,51 @@ class Information:
 
 class Task:
 
-    def __init__(self, name, owner = None, description = None, start = None, finish = None):
-        self.name = name
-        self.start = start
-        self.finish = finish
-        self.owner = owner
+    def __init__(self, id = 0, pid = 0, title = "", type = "", style = ""):
+        
+        self.id = id
+        self.pid = pid
+        self.title = title
+        self.type = type
+        self.style = style
+
         self.info = []
         self.plan = []
-        self.tid = -1
-        
-    def add_task(title, tid = 0):
-        conn = sqlite3.connect('resources/database/tmgr.sqlite', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
-        c = conn.execute('INSERT INTO task(tid, title) VALUES (?,?)', (tip, title))
-        c.close()
-    
-    def read_detail(self):
-        conn = sqlite3.connect('../resources/database/tmgr.sqlite')
+        self.sub = []
+
+    def read_tasks(self, id = None):
+
+        # 定义内部迭代函数
+        def read_iter( this, conn ):
+            # 读当前任务信息
+            c = conn.execute('SELECT * FROM task WHERE id=?', (this.id,)).fetchone()
+            this.pid, this.title, this.type, this.style = c['pid'], c['title'], c['class'], c['style']
+
+            # 读子任务信息
+            c = conn.execute('SELECT * FROM task WHERE pid=?', (this.id, ))
+            this.sub = [Task( t['id'], t['pid'], t['title'], t['class'], t['style'] ) for t in c]
+
+            # 迭代回归子任务
+            for s in this.sub:
+                read_iter( s, conn )
+
+        # 重新赋值ID
+        self.id = id if id else self.id
+
+        # 打开数据库
+        conn = sqlite3.connect('resources/database/tmgr.sqlite')
         conn.row_factory = sqlite3.Row
-        c = conn.execute('SELECT * FROM information WHERE tid=?', (self.tid,))
-        self.info = c.fetchall()
-        c.close()
         
+        # 回归读取
+        read_iter( self, conn )
+
+        # 关闭数据库
+        conn.close()
+    
     def read_information(self, typ):
         conn = sqlite3.connect('resources/database/tmgr.sqlite', detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)
         conn.row_factory = sqlite3.Row
-        c = conn.execute('SELECT * FROM information WHERE tid=? AND type=? ORDER BY finish ASC', (self.tid, typ))
-        #rst = c.fetchall()
+        c = conn.execute('SELECT * FROM information WHERE tid=? AND type=? ORDER BY finish ASC', (self.id, typ))
         rst = [Information(id=info["id"], type=info["type"], owner=info["owner"], description=info["description"], start=info["start"], finish=info["finish"], status=info["status"], complete=info["complete"]) for info in c]
         c.close()
         return rst
@@ -87,7 +113,7 @@ class Task:
         else: return (None, False)
         
     def html_task(self):
-        return '<td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td>'.format(self.name, self.owner, self.start, self.finish)
+        return '<td>{0}</td><td class="field">{1}</td><td class="field">{2}</td><td class="field">{3}</td>'.format(self.title, "", "", "")
 
     def html_td(self, hhour_status, plan_status, complete, info_id = 0):
         if plan_status == 0 and complete == 0:  # 没有开始/已经结束的任务，并且没有info信息，则跳过

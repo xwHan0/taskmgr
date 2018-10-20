@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/gantt.css')}}" />
 <script src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
 <script src="{{url_for('static', filename='layer/layer.js')}}"></script>
+<script src="{{url_for('static', filename='jquery/treegrid/treegrid.js')}}"></script>
 <script src="{{url_for('static', filename='js/gantt.js')}}"></script>
 
 
@@ -35,6 +36,9 @@
     </tr>
   </thead>
   <tbody>
+      <tr>
+          <th>Title</th><th>Owner</th><th>Finish</th><th>Status</th>
+        </tr>
   </tbody>
 </table>
 </div>

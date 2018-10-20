@@ -3,6 +3,7 @@ div#control {
   padding: 5px;
 }
 
+/*Gantt表设置*/
 div#task_gantt {
   display: flex;
   flex-flow: row nowrap;
@@ -30,6 +31,7 @@ table {
 table th{
   border:solid #000 1px;
   padding: 0px;
+  background: #CCFFFF;
 }
 
 table td{
@@ -40,6 +42,10 @@ table td{
 
 div#task table {
   width : 100%;
+}
+
+div#task th {
+  background: #CCFFFF;
 }
 
 div#task tbody {
