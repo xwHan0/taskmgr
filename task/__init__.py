@@ -112,8 +112,17 @@ class Task:
         elif hhour >= info.start and hhour <= info.finish: return (info, False)
         else: return (None, False)
         
-    def html_task(self):
-        return '<td>{0}</td><td class="field">{1}</td><td class="field">{2}</td><td class="field">{3}</td>'.format(self.title, "", "", "")
+    def html_sub_task(self, lvl_str = 'Task0'):
+        for t in self.sub:
+            html += '<tr id="{0}">\n'.format(lvl_str)
+            html += '    <th class="field">{0}</th>'.format(self.title)
+            html += '    <th class="field">{0}</th>'.format(self.info[-1].owner)
+            html += '    <th class="field">{0}</th>'.format(self.info[-1].status)
+            html += '    <th class="field">{0}</th>'.format(self.info[-1].finish)
+            html += '</tr>\n'
+            # 深度优先递归添加
+            html += t.html_sub_task( lvl_str + '_0' )
+        return html
 
     def html_td(self, hhour_status, plan_status, complete, info_id = 0):
         if plan_status == 0 and complete == 0:  # 没有开始/已经结束的任务，并且没有info信息，则跳过
