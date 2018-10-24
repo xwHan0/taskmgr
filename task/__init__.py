@@ -1,6 +1,7 @@
 import sqlite3
 from datetime import *
 from gantt.const import *
+from main import *
 
 def addTask(title, pid = 0):
     conn = sqlite3.connect('resources/database/tmgr.sqlite')
@@ -29,19 +30,22 @@ class Information:
         self.complete = complete
 
 
-class Task:
+class Task(db.Model):
 
-    def __init__(self, id = 0, pid = 0, title = "", type = "", style = ""):
+    def __init__(self):
         
-        self.id = id
-        self.pid = pid
-        self.title = title
-        self.type = type
-        self.style = style
+        self.id = db.Column(db.Integer, primary_key=True)
+        self.pid = db.Column(db.Integer, nullable=False)
+        self.title = db.Column(db.String(255), nullable=False)
+        self.typ = db.Column(db.String(32), nullable=False)
+        self.style = db.Column(db.String(64))
 
         self.info = []
         self.plan = []
         self.sub = []
+            
+    def __repr__(self):
+        return '<Task %r>' % self.title
 
     def read_tasks(self, id = None):
 
