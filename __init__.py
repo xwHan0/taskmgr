@@ -1,5 +1,5 @@
 from app import *
-from task import *
+from model import *
 from route.home import *
 
 if __name__ == '__main__':

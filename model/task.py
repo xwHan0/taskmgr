@@ -1,6 +1,4 @@
-from datetime import *
 
-from gantt.const import *
 from app import db
 
 
@@ -13,13 +11,16 @@ class Task(db.Model):
     style = db.Column(db.String(64))
 
     pid = db.Column(db.Integer, db.ForeignKey('Task.id'))
+
     sub = db.relationship('Task', lazy='dynamic')    
+    info = db.relationship('Information', backref='task', lazy='dynamic')
     
-    def __init__(self):
-        self.info = []
-        self.plan = []
-        self.sub = []
+    def __init__(self, title='', pid=0, typ='', style=''):
+        self.title = title
+        self.pid = pid
+        self.typ = typ
+        self.style = style
             
-    def __repr__(self):
-        return '<Task %r>' % self.title
+    def __str__(self):
+        return '[Task:{0}] id={1} typ={2} style={3}'.format(self.title, self.id, self.typ, self.style)
 

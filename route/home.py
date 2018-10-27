@@ -1,6 +1,16 @@
 from flask import render_template, redirect, url_for
 
-from app import *
+from comlib.tensor import iterator
+
+from app import app
+from model.task import *
+from model.information import Information
+
+def task_gnxt(node, idx):
+    if idx == []:
+        return node
+    else:
+        return node.sub
 
 @app.route('/')
 def index():
@@ -9,7 +19,9 @@ def index():
 @app.route('/task/<int:id>')
 def view_task(id):
     tasks = Task.query.filter_by(pid=id).all()
-    return tasks[0].sub.all()[0].__repr__()
+    tasks = [('Task' + '_'.join(map(str, idx)), t.title, t.id) for idx,t in iterator(tasks, gnxt=task_gnxt)]
+    return render_template('gantt.html', tasks=tasks, gantt=[])
+    # return str(tasks)
     
 @app.route('/add')
 def add_task():

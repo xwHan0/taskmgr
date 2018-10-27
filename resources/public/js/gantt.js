@@ -26,5 +26,5 @@ $(document).ready(function(){
 		       }); 
 	})
 	
-    
+    treegrid = JqTreeGrid( "Task", '/public/jquery/treegrid' )
 })

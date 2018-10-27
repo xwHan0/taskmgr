@@ -36,9 +36,11 @@
     </tr>
   </thead>
   <tbody>
-      <tr>
-          <th>Title</th><th>Owner</th><th>Finish</th><th>Status</th>
-        </tr>
+    {% for t in tasks %}
+      <tr id='{{t[0]}}' tid='{{t[2]}}'>
+          <td>{{t[1]}}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+      </tr>
+    {% endfor %}
   </tbody>
 </table>
 </div>
@@ -46,7 +48,7 @@
 <div id="gantt" onscroll="document.getElementById('task').scrollTop=this.scrollTop;">
 <table>
   <thead>
-    <tr>
+    <!-- <tr>
       {{gantt.day_header_day_html|safe}}
     </tr>
     <tr>
@@ -54,14 +56,14 @@
     </tr>
     <tr>
       {{gantt.day_header_hhour_html|safe}}
-    </tr>
+    </tr> -->
   </thead>
   <tbody>
-  {% for tsk in tasks %}
+  <!-- {% for tsk in tasks %}
     <tr>
       {{tsk|safe}}
     </tr>
-  {% endfor %}
+  {% endfor %} -->
   </tbody>
   <tfoot>
   </tfoot>
