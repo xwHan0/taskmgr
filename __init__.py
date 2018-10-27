@@ -1,4 +1,4 @@
-
+from app import *
 from task import *
 from route.home import *
 

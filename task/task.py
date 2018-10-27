@@ -1,7 +1,7 @@
 from datetime import *
 
 from gantt.const import *
-from global.app import *
+from app import *
 
 
 class Task(db.Model):
