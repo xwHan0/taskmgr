@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect
-from flask-sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 from gantt import Gantt
 from task import Task, addTask
