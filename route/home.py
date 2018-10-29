@@ -18,8 +18,11 @@ def index():
 
 @app.route('/task/<int:id>')
 def view_task(id):
+    # 获取任务信息
     tasks = Task.query.filter_by(pid=id).all()
-    tasks = [('Task' + '_'.join(map(str, idx)), t.title, t.id) for idx,t in iterator(tasks, gnxt=task_gnxt)]
+    tasks = [t.complete(idx) for idx,t in iterator(tasks, gnxt=task_gnxt)]
+    # 获取日期信息
+    
     return render_template('gantt.html', tasks=tasks, gantt=[])
     # return str(tasks)
     
