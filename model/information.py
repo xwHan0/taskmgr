@@ -12,7 +12,7 @@ class Information(db.Model):
     status = db.Column(db.String(32))
     complete = db.Column(db.Integer)
 
-    tid = db.Column(db.Integer, db.ForeignKey('Task.id'))
+    tid = db.Column(db.Integer, db.ForeignKey('Task.id'))    
 
     def __str__(self):
         return self.description

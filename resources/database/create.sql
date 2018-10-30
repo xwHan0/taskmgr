@@ -1,6 +1,4 @@
---ALTER TABLE tasks RENAME TO temp;  -- Rename table
-
---drop table milestones; --- Do not need when rename Table using ALTER 
+-- ALTER TABLE Task RENAME TO temp;
 
 CREATE TABLE Task
 (
@@ -8,10 +6,11 @@ CREATE TABLE Task
   pid INTEGER default 0,
   title NCHAR(255) default "",
   typ NCHAR(32) default "",
-  style NCHAR(64) default ""
-  
+  style NCHAR(64) default "",
+  sid INTEGER,
+  eid INTEGET
 );
 
--- INSERT INTO tmp(id,tid,type,owner,description,start,finish,status) select id,tid,type,owner,description,start,finish,status from information;
+INSERT INTO Task(id,pid,title,typ,style) SELECT id,pid,title,typ,style FROM temp;
 
 --drop table temp;

@@ -1,5 +1,7 @@
+from flask_sqlalchemy import orm
 
 from app import db
+from information import Information
 
 
 class Task(db.Model):
@@ -11,6 +13,8 @@ class Task(db.Model):
     style = db.Column(db.String(64))
 
     pid = db.Column(db.Integer, db.ForeignKey('Task.id'))
+    sid = db.Column(db.Integer, db.ForeignKey('Information.id'))
+    eid = db.Column(db.Integer, db.ForeignKey('Information.id'))
 
     sub = db.relationship('Task', lazy='dynamic')    
     info = db.relationship('Information', backref='task', lazy='dynamic')
@@ -21,12 +25,16 @@ class Task(db.Model):
         self.typ = typ
         self.style = style
         
+    @orm.reconstructor
+    def init_and_load(self):
+        self.plan = self.sub.filter(Information.type=='plan').order_by(Information.finish).all()
+        l = len(self.plan)
+        self.owner = self.plan[-1].owner if l else ''
+        self.finish = self.plan[-1].finish if l else ''
+        self.status = self.plan[-1].status if l else ''
+    
+
     def complete(self, idx = []):
-        self.plan = self.sub.filter(typ='plan').all()
-        self.owner = self.plan[-1].owner
-        self.finish = self.plan[-1].finish
-        self.status = self.plan[-1].status
-        
         self.identity = 'Task' + '_'.join(map(str, idx))
         
         return self
