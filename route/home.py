@@ -1,9 +1,9 @@
 from flask import render_template, redirect, url_for
 from flask_sqlalchemy.orm import aliased
-from flask_sqlalchemy import and_, func
-import Datatime
+from flask_sqlalchemy import and_, or_, func
+from datetime import *
 
-from comlib.tensor import iterator
+from comlib.tensor import iterator,Index
 
 from app import app, db
 from model.task import *
@@ -65,7 +65,31 @@ def view_task(id):
             #and_(sinfo.start>=start, einfo.finish<=finish))
         
     #tasks = Task.query.filter_by(pid==id).filter(status！='close').all()
-    tasks = [t.complete(idx) for idx,t in iterator(tasks, gnxt=task_gnxt)]
+    
+    einfo = db.session.query(
+        Information.id, Information.tid, Information.status, 
+        func.max(Information.finish).label('finish')
+    )  \
+    .filter(Information.type=='plan')  \
+    .group_by(Information.tid)  \
+    .subquery()
+    
+    sinfo = db.session.query(
+        Information.id, Information.tid,
+        func.min(Information.start).label('start')
+    )  \
+    .filter(Information.type=='plan')  \
+    .group_by(Information.tid)  \
+    .subquery()
+    
+    tasks = Task.query  \
+        .outerjoin(einfo, einfo.c.tid == Task.id)  \
+        .filter(Task.id==id)  \
+        .filter(or_(einfo.c.status=='open', einfo.c.status==None))  \
+        .all()
+    
+    selection = 'Task[(len({$1.idx}())==1 and {$0.pid}==' + str(id) + ') or len({$1.idx}()) > 1]'
+    tasks = [t.complete(idx.idx()) for t,idx in iterator(tasks, selection, [getattr,'sub']).assist(Index())]
     # 获取日期信息
     
     

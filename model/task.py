@@ -16,8 +16,10 @@ class Task(db.Model):
     sid = db.Column(db.Integer, db.ForeignKey('Information.id'))
     eid = db.Column(db.Integer, db.ForeignKey('Information.id'))
 
+    splan = db.relationship('Information',foreign_keys='Task.id', primaryjoin='Information.tid==Task.id')
+
     sub = db.relationship('Task', lazy='dynamic')    
-    info = db.relationship('Information', backref='task', lazy='dynamic')
+    info = db.relationship('Information', foreign_keys='Ingormation.tid', backref='task', lazy='dynamic')
     
     def __init__(self, title='', pid=0, typ='', style=''):
         self.title = title
