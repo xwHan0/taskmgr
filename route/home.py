@@ -1,13 +1,12 @@
 from flask import render_template, redirect, url_for
-from flask_sqlalchemy.orm import aliased
-from flask_sqlalchemy import and_, or_, func
+from sqlalchemy import and_, or_, func
 from datetime import *
 
-from comlib.tensor import iterator,Index
+from comlib import iterator,Index
 
-from app import app, db
-from model.task import *
-from model.information import Information
+from taskmgr.app import app, db
+from taskmgr.model.task import *
+from taskmgr.model.information import Information
 
 def task_gnxt(node, idx):
     if idx == []:
@@ -27,28 +26,23 @@ def view_task(id):
     finish = (start+timedelta(days=21)).replace(hour=23, minute=59)
 
     # 查询开始信息
-    s = Information.query(
-            Information.tid,
-            func.min(Information.start).label('start')
-        ) \
-        .group_by(Information.tid)  \
-        .subquery()
-    e = Information.query(
-            Information.tid,
-            Information.status,
-            Information.owner,
-            func.max(Information.finish).label('finish')
-        ) \
-        .group_by(Information.tid)  \
-        .subquery()
-    tasks = Task.query(Task.id,Task.title)  \
-        .outerjoin(e, e.c.id==Task.id)  \
-        .outerjoin(s, s.c.id==Task.id)  \
-        .filter(e.c.status.is_(None), e.c.status!='close')  \
-        .filter(and_(s.c.start<=start, e.c.finish>=start),
-            and_(e.c.finish>=finish, s.c.start<=finish),
-            and_(s.c.start>=start, e.c.finish<=finish))
-        .all()
+
+    # e = Information.query(
+    #         Information.tid,
+    #         Information.status,
+    #         Information.owner,
+    #         func.max(Information.finish).label('finish')
+    #     ) \
+    #     .group_by(Information.tid)  \
+    #     .subquery()
+    # tasks = Task.query(Task.id,Task.title)  \
+    #     .outerjoin(e, e.c.id==Task.id)  \
+    #     .outerjoin(s, s.c.id==Task.id)  \
+    #     .filter(e.c.status.is_(None), e.c.status!='close')  \
+    #     .filter(and_(s.c.start<=start, e.c.finish>=start),
+    #         and_(e.c.finish>=finish, s.c.start<=finish),
+    #         and_(s.c.start>=start, e.c.finish<=finish))     \
+    #     .all()
 
 
     # 获取任务信息
@@ -66,29 +60,31 @@ def view_task(id):
         
     #tasks = Task.query.filter_by(pid==id).filter(status！='close').all()
     
-    einfo = db.session.query(
-        Information.id, Information.tid, Information.status, 
-        func.max(Information.finish).label('finish')
-    )  \
-    .filter(Information.type=='plan')  \
-    .group_by(Information.tid)  \
-    .subquery()
+    # einfo = db.session.query(
+    #     Information.id, Information.tid, Information.status, 
+    #     func.max(Information.finish).label('finish')
+    # )  \
+    # .filter(Information.type=='plan')  \
+    # .group_by(Information.tid)  \
+    # .subquery()
     
-    sinfo = db.session.query(
-        Information.id, Information.tid,
-        func.min(Information.start).label('start')
-    )  \
-    .filter(Information.type=='plan')  \
-    .group_by(Information.tid)  \
-    .subquery()
+    # sinfo = db.session.query(
+    #     Information.id, Information.tid,
+    #     func.min(Information.start).label('start')
+    # )  \
+    # .filter(Information.type=='plan')  \
+    # .group_by(Information.tid)  \
+    # .subquery()
     
     tasks = Task.query  \
-        .outerjoin(einfo, einfo.c.tid == Task.id)  \
-        .filter(Task.id==id)  \
-        .filter(or_(einfo.c.status=='open', einfo.c.status==None))  \
+        .filter(Task.pid==id)  \
         .all()
+        # .filter(or_(Task.eplan==None, Task.eplan.status=='close')) \
+        # .outerjoin(einfo, einfo.c.tid == Task.id)  \
+        # .filter(or_(einfo.c.status=='open', einfo.c.status==None))  \
     
-    selection = 'Task[(len({$1.idx}())==1 and {$0.pid}==' + str(id) + ') or len({$1.idx}()) > 1]'
+    # selection = 'Task[(#1.lvl()==0 and #0.pid==' + str(id) + ') or #1.lvl() > 0]'
+    selection = '*'
     tasks = [t.complete(idx.idx()) for t,idx in iterator(tasks, selection, [getattr,'sub']).assist(Index())]
     # 获取日期信息
     
