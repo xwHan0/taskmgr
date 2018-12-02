@@ -1,7 +1,9 @@
 from flask_sqlalchemy import orm
+from sqlalchemy import desc, select
+from sqlalchemy.ext.hybrid import hybrid_property
 
-from app import db
-from information import Information
+from taskmgr.app import db
+from taskmgr.model.information import Information
 
 
 class Task(db.Model):
@@ -16,10 +18,22 @@ class Task(db.Model):
     sid = db.Column(db.Integer, db.ForeignKey('Information.id'))
     eid = db.Column(db.Integer, db.ForeignKey('Information.id'))
 
-    splan = db.relationship('Information',foreign_keys='Task.id', primaryjoin='Information.tid==Task.id')
+    splan = orm.column_property(
+        select([Information.id]).\
+            where(Information.tid==id).\
+            where(Information.type=='plan'). \
+            order_by(Information.start). \
+            correlate_except(Information))
+
+    @hybrid_property
+    def eplan(self):
+        return self.info.filter(Information.type=='plan').order_by(desc(Information.finish)).first()
+
+    # splan = db.relationship('Information',foreign_keys='Task.sid', primaryjoin='Information.tid==Task.sid')
 
     sub = db.relationship('Task', lazy='dynamic')    
-    info = db.relationship('Information', foreign_keys='Ingormation.tid', backref='task', lazy='dynamic')
+    info = db.relationship('Information', foreign_keys='Information.tid', 
+        primaryjoin='Information.tid==Task.id', backref='task', lazy='dynamic')
     
     def __init__(self, title='', pid=0, typ='', style=''):
         self.title = title
@@ -29,11 +43,18 @@ class Task(db.Model):
         
     @orm.reconstructor
     def init_and_load(self):
-        self.plan = self.sub.filter(Information.type=='plan').order_by(Information.finish).all()
-        l = len(self.plan)
-        self.owner = self.plan[-1].owner if l else ''
-        self.finish = self.plan[-1].finish if l else ''
-        self.status = self.plan[-1].status if l else ''
+
+        # self.plan = self.sub.filter(Information.type=='plan').order_by(Information.finish).all()
+
+        # 获取计划的开始和最终Information
+        # self.splan = self.info.filter(Information.type=='plan').order_by(Information.start).first()
+        # self.eplan = self.info.filter(Information.type=='plan').order_by(desc(Information.finish)).first()
+
+        # l = len(self.plan)
+        # self.owner = self.plan[-1].owner if l else ''
+        # self.finish = self.plan[-1].finish if l else ''
+        # self.status = self.plan[-1].status if l else ''
+        pass
     
 
     def complete(self, idx = []):
