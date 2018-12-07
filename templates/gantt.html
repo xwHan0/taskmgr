@@ -38,7 +38,7 @@
   <tbody>
     {% for t in tasks %}
       <tr id='{{t.identity}}' tid='{{t.id}}' class='{{t.style}}'>
-          <td>{{t.title}}</td><td>{{t.owner}}</td><td>{{t.finish}}</td><td>{{t.status}}</td>
+          <td><a href='/task/{{t.id}}'>{{t.title}}</a></td><td>{{t.eplan.owner}}</td><td>{{t.eplan.finish}}</td><td>{{t.eplan.status}}</td>
       </tr>
     {% endfor %}
   </tbody>

@@ -83,8 +83,7 @@ def view_task(id):
         # .outerjoin(einfo, einfo.c.tid == Task.id)  \
         # .filter(or_(einfo.c.status=='open', einfo.c.status==None))  \
     
-    # selection = 'Task[(#1.lvl()==0 and #0.pid==' + str(id) + ') or #1.lvl() > 0]'
-    selection = '*'
+    selection = '*[(#1.lvl()==0 and (#0.eplan==None or #0.eplan.status!="close") and (#0.splan==None or #0.splan.start>=finish)) or #1.lvl() > 0]/c'
     tasks = [t.complete(idx.idx()) for t,idx in iterator(tasks, selection, [getattr,'sub']).assist(Index())]
     # 获取日期信息
     

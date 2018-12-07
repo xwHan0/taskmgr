@@ -18,17 +18,27 @@ class Task(db.Model):
     sid = db.Column(db.Integer, db.ForeignKey('Information.id'))
     eid = db.Column(db.Integer, db.ForeignKey('Information.id'))
 
-    splan = orm.column_property(
-        select([Information.id]).\
-            where(Information.tid==id).\
-            where(Information.type=='plan'). \
-            order_by(Information.start). \
-            correlate_except(Information))
+    #splan = orm.column_property(
+     #   select([Information.id]).\
+     #       where(Information.tid==id).\
+     #       where(Information.type=='plan'). \
+      #      order_by(Information.start). \
+     #       correlate_except(Information))
 
     @hybrid_property
     def eplan(self):
+        # return db.session.query(Information).filter(Information.tid==self.id).filter(Information.type=='plan').order_by(desc(Information.finish)).first()
         return self.info.filter(Information.type=='plan').order_by(desc(Information.finish)).first()
 
+    @hybrid_property
+    def splan(self):
+        return self.info.filter(Information.type=='plan').order_by(asc(Information.start)).first()
+
+    @hybrid_property
+    def parent(self):
+        return Task.query.filter(Task.id==self.pid).first()
+
+    
     # splan = db.relationship('Information',foreign_keys='Task.sid', primaryjoin='Information.tid==Task.sid')
 
     sub = db.relationship('Task', lazy='dynamic')    
