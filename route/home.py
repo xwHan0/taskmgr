@@ -2,12 +2,11 @@ from flask import render_template, redirect, url_for
 from sqlalchemy import and_, or_, func
 from datetime import *
 
-from comlib import iterator,Index
+from comlib import iterator,Index,LinkList,interpose
 
-from taskmgr.app import app, db
-from taskmgr.model.task import *
-from taskmgr.model.information import Information
-
+from app import app, db
+from model.task import *
+from model.information import Information
 def task_gnxt(node, idx):
     if idx == []:
         return node
@@ -84,12 +83,12 @@ def view_task(id):
         # .filter(or_(einfo.c.status=='open', einfo.c.status==None))  \
     
     selection = '*[(#1.lvl()==0 and (#0.eplan==None or #0.eplan.status!="close") and (#0.splan==None or #0.splan.start>=finish)) or #1.lvl() > 0]/c'
-    tasks = [t.complete(idx.idx()) for t,idx in iterator(tasks, selection, [getattr,'sub']).assist(Index())]
+    tasks = [t.complete(idx.idx()) for t,idx in iterator(tasks, selection, gnxt={Task:'sub'}).assist(Index())]
     # 获取日期信息
     
+    dir = [(t.title, t.id) for t in LinkList(tasks,'parent')]
     
-    
-    return render_template('gantt.html', tasks=tasks, gantt=[])
+    return render_template('gantt.html', tasks=tasks, gantt=[], dir=dir)
     # return str(tasks)
     
 @app.route('/add')

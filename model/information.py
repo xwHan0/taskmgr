@@ -1,4 +1,4 @@
-from taskmgr.app import db
+from app import db
 
 class Information(db.Model):
 

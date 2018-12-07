@@ -2,8 +2,8 @@ from flask_sqlalchemy import orm
 from sqlalchemy import desc, select
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from taskmgr.app import db
-from taskmgr.model.information import Information
+from app import db
+from model.information import Information
 
 
 class Task(db.Model):
