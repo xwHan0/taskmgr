@@ -86,9 +86,11 @@ def view_task(id):
     tasks = [t.complete(idx.idx()) for t,idx in iterator(tasks, selection, gnxt={Task:'sub'}).assist(Index())]
     # 获取日期信息
     
-    dir = [(t.title, t.id) for t in LinkList(tasks,'parent')]
+    hierachy = ['<a href="/task/{1}">{0}</a>'.format(t.title, t.id) for t in LinkList(tasks,'parent')].reverse()
+    hierachy = interpose(hierachy, '/')
     
-    return render_template('gantt.html', tasks=tasks, gantt=[], dir=dir)
+    
+    return render_template('gantt.html', tasks=tasks, gantt=[], dir=hierachy)
     # return str(tasks)
     
 @app.route('/add')
