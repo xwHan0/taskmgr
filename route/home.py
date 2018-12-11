@@ -104,4 +104,4 @@ def add_task():
     u.title = 'TaskX'
     db.session.add(u)
     db.session.commit()
-    return redirect(url_for('index'))
+    return redirect(url_for('view_task', id=u.pid))
