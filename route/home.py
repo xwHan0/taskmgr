@@ -1,4 +1,6 @@
 from flask import render_template, redirect, url_for
+from flask import make_response
+
 from sqlalchemy import and_, or_, func
 from datetime import *
 
@@ -86,17 +88,19 @@ def view_task(id):
     tasks = [t.complete(idx.idx()) for t,idx in iterator(tasks, selection, gnxt={Task:'sub'}).assist(Index())]
     # 获取日期信息
     
-    hierachy = ['<a href="/task/{1}">{0}</a>'.format(t.title, t.id) for t in LinkList(tasks,'parent')].reverse()
+    task = Task.query.filter(Task.id==id).first()
+    hierachy = ['<a href="/task/{1}">{0}</a>'.format(t.title, t.id) for t in LinkList(task,'parent')].reverse()
     hierachy = interpose(hierachy, '/')
+
+    resp = make_response(render_template('gantt.html', tasks=tasks, gantt=[], dir=hierachy))
+    resp.set_cookie('taskid', id)
+    return resp
     
-    
-    return render_template('gantt.html', tasks=tasks, gantt=[], dir=hierachy)
-    # return str(tasks)
     
 @app.route('/add')
 def add_task():
     u = Task()
-    u.pid = 0
+    u.pid = request.cookies.get('taskid')
     u.title = 'TaskX'
     db.session.add(u)
     db.session.commit()
