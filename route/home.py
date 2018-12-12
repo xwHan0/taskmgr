@@ -92,7 +92,8 @@ def view_task(id):
     
     task = Task.query.filter(Task.id==id).first()
     hierachy = ['<a href="/task/{1}">{0}</a>'.format(t.title, t.id) for t in LinkList(task,'parent')].reverse()
-    hierachy = interpose(hierachy, '/')
+    #hierachy = interpose(hierachy, '/')
+    hierachy = ' &lt;&lt; '.join(hierachy)
 
     resp = make_response(render_template('gantt.html', tasks=tasks, gantt=[], dir=hierachy))
     resp.set_cookie('taskid', id)
