@@ -17,7 +17,9 @@ def task_gnxt(node, idx):
 
 @app.route('/')
 def index():
-    return render_template('gantt.html',gantt=[])
+    return redirect(url_for('view_task', id=0))
+    
+    #return render_template('gantt.html',gantt=[])
 
 @app.route('/task/<int:id>')
 def view_task(id):
@@ -105,3 +107,4 @@ def add_task():
     db.session.add(u)
     db.session.commit()
     return redirect(url_for('view_task', id=u.pid))
+    
