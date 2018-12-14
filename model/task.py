@@ -15,8 +15,8 @@ class Task(db.Model):
     style = db.Column(db.String(64))
 
     pid = db.Column(db.Integer, db.ForeignKey('Task.id'))
-    sid = db.Column(db.Integer, db.ForeignKey('Information.id'))
-    eid = db.Column(db.Integer, db.ForeignKey('Information.id'))
+    #sid = db.Column(db.Integer, db.ForeignKey('Information.id'))
+    #eid = db.Column(db.Integer, db.ForeignKey('Information.id'))
 
     #splan = orm.column_property(
      #   select([Information.id]).\

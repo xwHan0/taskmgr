@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
 from flask import make_response
 
 from sqlalchemy import and_, or_, func
@@ -91,21 +91,24 @@ def view_task(id):
     # 获取日期信息
     
     task = Task.query.filter(Task.id==id).first()
-    hierachy = ['<a href="/task/{1}">{0}</a>'.format(t.title, t.id) for t in LinkList(task,'parent')].reverse()
-    #hierachy = interpose(hierachy, '/')
-    hierachy = ' &lt;&lt; '.join(hierachy)
+    hierachy = ['<a href="/task/{1}">{0}</a>'.format(t.title, t.id) for t in LinkList(task,'parent')]
+    hierachy.reverse()
+    hierachy = ' &lt;&lt; '.join(hierachy) if hierachy else ""
 
     resp = make_response(render_template('gantt.html', tasks=tasks, gantt=[], dir=hierachy))
     resp.set_cookie('taskid', id)
     return resp
     
     
-@app.route('/add')
+@app.route('/add_task', methods=['POST'])
 def add_task():
-    u = Task()
-    u.pid = request.cookies.get('taskid')
-    u.title = 'TaskX'
-    db.session.add(u)
-    db.session.commit()
-    return redirect(url_for('view_task', id=u.pid))
+    if request.method == 'POST':
+        title = request.form['title']
+        pid = int(request.cookies.get('taskid'))
+        u = Task(title=title, pid=pid,typ='task')
+        db.session.add(u)
+        db.session.commit()
+        return redirect(url_for('view_task', id=pid))
+    else:
+        return ''
     

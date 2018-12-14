@@ -10,12 +10,13 @@ div#task_gantt {
 }
 
 div#task {
-  width: 20%;
+  width: 40%;
   overflow-x: scroll;
+  white-space:nowrap;
 }
 
 div#gantt {
-  width: 80%;
+  width: 60%;
   overflow: scroll;
 }
 
